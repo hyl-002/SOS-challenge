@@ -1,159 +1,165 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Customer Mood Challenge</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <main class="app-shell">
-    <header class="brand-bar">
-      <div>
-        <p class="eyebrow">ICC 開季互動挑戰</p>
+<main class="game-shell">
+
+  <section id="screenLanding" class="screen active">
+    <div class="landing-screen">
+      <div class="landing-title">
+        <span>ICC 開季互動挑戰</span>
         <h1>Customer Mood Challenge</h1>
       </div>
-      <span class="prototype-badge">V1</span>
-    </header>
 
-    <!-- Landing -->
-    <section id="screenLanding" class="screen active">
-      <div class="panel hero-panel">
-        <div class="hero-emoji">🎧</div>
-        <h2>令顧客 100% 滿意！</h2>
-        <p class="lead">
-          運用產品知識及服務技巧，回應顧客查詢。你嘅每一個選擇，都會影響顧客滿意度。
-        </p>
-
-        <label class="field-label" for="staffId">Staff ID</label>
-        <input id="staffId" class="text-input" type="text" inputmode="numeric"
-               autocomplete="off" placeholder="輸入 Staff ID" />
-
-        <button id="goRulesBtn" class="btn btn-primary">繼續</button>
-        <p id="landingMessage" class="status-message" aria-live="polite"></p>
-      </div>
-    </section>
-
-    <!-- Rules -->
-    <section id="screenRules" class="screen">
-      <div class="panel">
-        <p class="eyebrow">遊戲玩法</p>
-        <h2>你的任務</h2>
-
-        <div class="rule-list">
-          <div class="rule-item">
-            <div class="rule-icon">💬</div>
-            <div><strong>回應 10 個顧客情境</strong><span>選擇最合適的回應</span></div>
-          </div>
-          <div class="rule-item">
-            <div class="rule-icon">❤️</div>
-            <div><strong>提升顧客滿意度</strong><span>每個選擇都會影響 Customer Mood</span></div>
-          </div>
-          <div class="rule-item">
-            <div class="rule-icon">⚡</div>
-            <div><strong>2 分 30 秒內完成</strong><span>可獲額外 10 分速度獎分</span></div>
-          </div>
-          <div class="rule-item">
-            <div class="rule-icon">🎁</div>
-            <div><strong>挑戰 100% Happy Customer</strong><span>達到 100% 即符合獎賞資格</span></div>
-          </div>
-        </div>
-
-        <button id="startBtn" class="btn btn-primary">開始接待顧客</button>
-        <button id="backBtn" class="btn btn-ghost">返回</button>
-        <p class="small-note">撳「開始接待顧客」後先正式計時。</p>
-      </div>
-    </section>
-
-    <!-- Loading -->
-    <section id="screenLoading" class="screen">
-      <div class="panel center-panel">
-        <div class="loader"></div>
-        <h2>載入題目中…</h2>
-        <p class="muted">請稍候</p>
-      </div>
-    </section>
-
-    <!-- Game -->
-    <section id="screenGame" class="screen">
-      <div class="game-top">
-        <div class="progress-card">
-          <div class="progress-meta">
-            <span id="questionCounter">Question 1 / 10</span>
-            <span id="questionType">Product</span>
-          </div>
-          <div class="progress-track"><div id="progressFill" class="progress-fill"></div></div>
-        </div>
-
-        <div class="timer-card">
-          <span>⏱ TIME</span>
-          <strong id="timerText">00:00</strong>
+      <div class="landing-scene">
+        <div class="big-customer">🙂</div>
+        <div class="bubble landing-bubble">
+          <strong>準備好未？</strong>
+          <p>運用產品知識同服務技巧，令我成為 100% Happy Customer！</p>
         </div>
       </div>
 
-      <div class="panel game-panel">
-        <div class="customer-header">
-          <div id="customerFace" class="customer-face">😐</div>
-          <div class="mood-wrap">
-            <div class="mood-meta">
-              <span>Customer Mood</span>
-              <strong id="moodText">40%</strong>
-            </div>
-            <div class="mood-track"><div id="moodFill" class="mood-fill"></div></div>
-          </div>
-        </div>
-
-        <div class="dialogue-box">
-          <span class="speaker">顧客</span>
-          <p id="questionText"></p>
-        </div>
-
-        <div id="answerList" class="answer-list"></div>
-
-        <div id="feedbackBox" class="feedback-box hidden" aria-live="polite"></div>
-        <button id="nextBtn" class="btn btn-dark hidden">繼續 ▶</button>
+      <div class="login-card">
+        <label for="staffId">Staff ID</label>
+        <input id="staffId" type="text" inputmode="numeric" placeholder="輸入 Staff ID">
+        <button id="goRulesBtn" class="yellow-btn">開始挑戰</button>
+        <p id="landingMessage" class="status"></p>
       </div>
-    </section>
+    </div>
+  </section>
 
-    <!-- Result -->
-    <section id="screenResult" class="screen">
-      <div class="panel result-panel">
-        <div id="resultFace" class="result-face">🤩</div>
-        <p class="eyebrow">CUSTOMER EXPERIENCE RESULT</p>
-        <h2 id="resultTitle">Perfect Customer Experience!</h2>
-        <div id="finalMood" class="final-score">100%</div>
-        <p id="resultMessage" class="lead">顧客非常滿意你今次嘅服務！</p>
+  <section id="screenRules" class="screen">
+    <div class="navy-header">
+      <button id="backBtn" class="back-btn">‹</button>
+      <h2>挑戰規則</h2>
+      <span></span>
+    </div>
 
-        <div class="result-grid">
-          <div class="result-stat">
-            <span>🧠 Product Knowledge</span>
-            <strong id="productScore">7 / 7</strong>
-          </div>
-          <div class="result-stat">
-            <span>💬 Service Skills</span>
-            <strong id="serviceScore">3 / 3</strong>
-          </div>
-          <div class="result-stat">
-            <span>⏱ Completion Time</span>
-            <strong id="completionTime">02:18</strong>
-          </div>
-          <div class="result-stat">
-            <span>⚡ Speed Bonus</span>
-            <strong id="speedBonus">+10</strong>
-          </div>
-        </div>
-
-        <div id="rewardBox" class="reward-box">
-          🏆 <strong>100% Happy Customer!</strong><br />
-          你已符合獎賞資格 🎁
-        </div>
-
-        <p id="submitStatus" class="status-message" aria-live="polite"></p>
-        <button id="restartBtn" class="btn btn-ghost">完成</button>
+    <div class="rules-page">
+      <div class="rules-person">🧑🏻</div>
+      <div class="bubble rules-bubble">
+        <strong>你嘅任務</strong>
+        <p>揀出最合適嘅回應，令顧客心情愈嚟愈好！</p>
       </div>
-    </section>
-  </main>
 
-  <script src="script.js"></script>
+      <div class="rules-board">
+        <div class="rule"><span>💬</span><div><b>10 個顧客情境</b><small>選擇最合適的回應</small></div></div>
+        <div class="rule"><span>❤️</span><div><b>提升顧客滿意度</b><small>每個選擇都會影響 Customer Mood</small></div></div>
+        <div class="rule"><span>⚡</span><div><b>2 分 30 秒內完成</b><small>可獲額外 10 分速度獎分</small></div></div>
+        <div class="rule"><span>🏆</span><div><b>100% Happy Customer</b><small>達標即可符合獎賞資格</small></div></div>
+      </div>
+
+      <button id="startBtn" class="yellow-btn">開始接待顧客</button>
+      <div class="tip">💡 撳開始後先正式計時</div>
+    </div>
+  </section>
+
+  <section id="screenLoading" class="screen">
+    <div class="loading-page">
+      <div class="spinner"></div>
+      <h2>顧客就快到喇…</h2>
+      <p>載入題目中</p>
+    </div>
+  </section>
+
+  <section id="screenGame" class="screen game-screen">
+    <div class="game-head">
+      <span>Customer Mood Challenge</span>
+      <div class="time-chip">⏱ <strong id="timerText">00:00</strong></div>
+    </div>
+
+    <div class="progress-bar-area">
+      <div class="progress-title">
+        <div><small>對話進度</small><strong id="questionCounter">1 / 10</strong></div>
+        <span id="questionType">Product</span>
+      </div>
+      <div id="stepDots" class="step-dots"></div>
+    </div>
+
+    <div class="race-scene">
+      <div class="cloud cloud1"></div>
+      <div class="cloud cloud2"></div>
+      <div class="stands"></div>
+      <div class="race-track"></div>
+
+      <div id="customerFace" class="game-customer">😐</div>
+
+      <div class="mood-gauge">
+        <div class="mood-inner">
+          <small>顧客心情</small>
+          <span id="moodEmoji">😐</span>
+          <strong id="moodText">40%</strong>
+        </div>
+      </div>
+
+      <div class="bubble customer-bubble">
+        <strong>顧客</strong>
+        <p id="questionText"></p>
+      </div>
+    </div>
+
+    <div class="answer-panel">
+      <div class="answer-title">
+        <span class="headset">🎧</span>
+        <div>
+          <h3>你會點樣回應顧客？</h3>
+          <p>請選擇最合適的回應</p>
+        </div>
+      </div>
+
+      <div id="answerList" class="answer-list"></div>
+      <div id="feedbackBox" class="feedback hidden"></div>
+      <button id="nextBtn" class="yellow-btn hidden">繼續 ▶</button>
+      <div class="tip">💡 準確資訊 + 清晰解釋 + 良好服務態度 = 滿意顧客</div>
+    </div>
+  </section>
+
+  <section id="screenResult" class="screen result-screen">
+    <div class="result-title">挑戰完成！</div>
+
+    <div class="result-scene">
+      <div class="confetti">◆　■　●　◆　■　●</div>
+      <div class="result-person">😄</div>
+
+      <div class="bubble result-bubble">
+        <span>今次你嘅表現……</span>
+        <strong id="resultTitle">客戶非常滿意！</strong>
+        <p id="resultMessage">你為顧客提供了專業又貼心嘅服務。</p>
+      </div>
+
+      <div class="final-gauge">
+        <small>最終顧客心情</small>
+        <span id="resultFace">🤩</span>
+        <strong id="finalMood">100%</strong>
+      </div>
+    </div>
+
+    <div class="summary-card">
+      <h3>表現總結</h3>
+      <div class="summary-row"><span>🧠</span><b>產品知識準確度</b><strong id="productScore">7 / 7</strong></div>
+      <div class="summary-row"><span>❤️</span><b>服務技巧表現</b><strong id="serviceScore">3 / 3</strong></div>
+      <div class="summary-row"><span>⏱</span><b>完成時間</b><strong id="completionTime">02:18</strong></div>
+      <div class="summary-row"><span>⚡</span><b>速度獎分</b><strong id="speedBonus">+10</strong></div>
+
+      <div id="rewardBox" class="award">
+        <span class="trophy">🏆</span>
+        <div><strong>Happy Customer Award</strong><small>達到 100% 即符合獎賞資格 🎉</small></div>
+      </div>
+
+      <p id="submitStatus" class="status light"></p>
+      <div class="result-buttons">
+        <button id="retryBtn" class="white-btn">↻ 再挑戰一次</button>
+        <button id="restartBtn" class="outline-btn">⌂ 返回主頁</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+<script src="script.js"></script>
 </body>
 </html>

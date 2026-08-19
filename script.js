@@ -1,17 +1,16 @@
 /*
-Customer Mood Challenge
------------------------
-1) Replace GAS_WEB_APP_URL with your deployed Google Apps Script Web App URL.
-2) Questions are loaded from the "Questions" sheet.
-3) Results are submitted to the "Results" sheet.
+Customer Mood Challenge - game layout version
+IMPORTANT:
+Keep your current Google Apps Script / Google Sheet setup.
+Replace the URL below with your deployed /exec URL.
 */
 
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__fDMdnIay7xwBgcQI0dKz7Ld3o-vE-WGvJuub_bE3iyH-UHQOWew1kg/exec";
+const GAS_WEB_APP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 const SETTINGS = {
   totalQuestions: 10,
   startingMood: 40,
-  fullSpeedBonusSeconds: 150, // 2:30
+  fullSpeedBonusSeconds: 150,
   fullSpeedBonusPoints: 10
 };
 
@@ -29,7 +28,7 @@ let state = {
   locked: false
 };
 
-const $ = (id) => document.getElementById(id);
+const $ = id => document.getElementById(id);
 
 const screens = {
   landing: $("screenLanding"),
@@ -42,12 +41,13 @@ const screens = {
 function showScreen(name) {
   Object.values(screens).forEach(el => el.classList.remove("active"));
   screens[name].classList.add("active");
+  window.scrollTo(0, 0);
 }
 
 function formatTime(seconds) {
-  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const ss = String(seconds % 60).padStart(2, "0");
-  return `${mm}:${ss}`;
+  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const s = String(seconds % 60).padStart(2, "0");
+  return `${m}:${s}`;
 }
 
 function customerFace(mood) {
@@ -65,17 +65,42 @@ function normalizeMood(value) {
 
 function updateMoodUI() {
   state.mood = normalizeMood(state.mood);
+
   $("moodText").textContent = `${state.mood}%`;
-  $("moodFill").style.width = `${state.mood}%`;
+  $("moodEmoji").textContent = customerFace(state.mood);
   $("customerFace").textContent = customerFace(state.mood);
+
+  const gauge = document.querySelector(".mood-gauge");
+  if (gauge) {
+    gauge.style.background =
+      `conic-gradient(#ffcc22 0 ${state.mood}%, #e8e8e8 ${state.mood}% 100%)`;
+  }
+}
+
+function buildStepDots() {
+  const area = $("stepDots");
+  area.innerHTML = "";
+
+  for (let i = 0; i < SETTINGS.totalQuestions; i++) {
+    const dot = document.createElement("div");
+    dot.className = "step-dot";
+    dot.textContent = i + 1;
+
+    if (i < state.currentIndex) dot.classList.add("done");
+    if (i === state.currentIndex) dot.classList.add("active");
+
+    area.appendChild(dot);
+  }
 }
 
 function validateStaffId() {
   const value = $("staffId").value.trim();
+
   if (!value) {
     $("landingMessage").textContent = "請輸入 Staff ID。";
     return false;
   }
+
   state.staffId = value;
   $("landingMessage").textContent = "";
   return true;
@@ -86,11 +111,12 @@ async function fetchQuestions() {
     throw new Error("未設定 Google Apps Script Web App URL。");
   }
 
-  const url = `${GAS_WEB_APP_URL}?action=questions&t=${Date.now()}`;
-  const response = await fetch(url);
+  const response = await fetch(
+    `${GAS_WEB_APP_URL}?action=questions&t=${Date.now()}`
+  );
 
   if (!response.ok) {
-    throw new Error("無法連接題目資料。");
+    throw new Error("Load failed");
   }
 
   const data = await response.json();
@@ -99,12 +125,11 @@ async function fetchQuestions() {
     throw new Error(data.message || "讀取題目失敗。");
   }
 
-  if (!Array.isArray(data.questions) || data.questions.length < SETTINGS.totalQuestions) {
+  if (!Array.isArray(data.questions) ||
+      data.questions.length < SETTINGS.totalQuestions) {
     throw new Error(`Questions sheet 至少需要 ${SETTINGS.totalQuestions} 條啟用題目。`);
   }
 
-  // V1: take first 10 active questions.
-  // You can later change this to random selection.
   state.questions = data.questions.slice(0, SETTINGS.totalQuestions);
 }
 
@@ -124,7 +149,10 @@ function stopTimer() {
     clearInterval(state.timerId);
     state.timerId = null;
   }
-  state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+
+  if (state.startTime) {
+    state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+  }
 }
 
 function resetGameState() {
@@ -148,10 +176,11 @@ function renderQuestion() {
   const q = state.questions[state.currentIndex];
   const number = state.currentIndex + 1;
 
-  $("questionCounter").textContent = `Question ${number} / ${SETTINGS.totalQuestions}`;
+  $("questionCounter").textContent = `${number} / ${SETTINGS.totalQuestions}`;
   $("questionType").textContent = q.type;
-  $("progressFill").style.width = `${(number / SETTINGS.totalQuestions) * 100}%`;
   $("questionText").textContent = q.question;
+
+  buildStepDots();
 
   $("feedbackBox").classList.add("hidden");
   $("feedbackBox").innerHTML = "";
@@ -164,9 +193,18 @@ function renderQuestion() {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "answer-btn";
-    button.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${escapeHtml(answer.text)}`;
 
-    button.addEventListener("click", () => selectAnswer(q, answer, index, button));
+    const letter = String.fromCharCode(65 + index);
+
+    button.innerHTML = `
+      <span class="answer-letter">${letter}</span>
+      <span>${escapeHtml(answer.text)}</span>
+    `;
+
+    button.addEventListener("click", () => {
+      selectAnswer(q, answer, index, button);
+    });
+
     answerList.appendChild(button);
   });
 }
@@ -182,12 +220,18 @@ function selectAnswer(question, answer, answerIndex, button) {
   button.classList.add("selected");
 
   const moodBefore = state.mood;
+
   state.mood += Number(answer.score || 0);
   updateMoodUI();
 
   if (answer.isBest) {
-    if (String(question.type).toLowerCase() === "product") state.productBest++;
-    if (String(question.type).toLowerCase() === "service") state.serviceBest++;
+    if (String(question.type).toLowerCase() === "product") {
+      state.productBest++;
+    }
+
+    if (String(question.type).toLowerCase() === "service") {
+      state.serviceBest++;
+    }
   }
 
   state.answers.push({
@@ -197,16 +241,20 @@ function selectAnswer(question, answer, answerIndex, button) {
     selectedText: answer.text,
     score: Number(answer.score || 0),
     isBest: Boolean(answer.isBest),
-    moodBefore,
+    moodBefore: moodBefore,
     moodAfter: state.mood
   });
 
-  let moodLabel = "Customer Mood —";
-  if (Number(answer.score) > 0) moodLabel = "Customer Mood ↑";
-  if (Number(answer.score) < 0) moodLabel = "Customer Mood ↓";
+  let moodMessage = "Customer Mood —";
 
-  $("feedbackBox").innerHTML =
-    `<strong>${moodLabel}</strong><span>${escapeHtml(answer.reaction || "")}</span>`;
+  if (Number(answer.score) > 0) moodMessage = "Customer Mood ↑";
+  if (Number(answer.score) < 0) moodMessage = "Customer Mood ↓";
+
+  $("feedbackBox").innerHTML = `
+    <strong>${moodMessage}</strong>
+    <span>${escapeHtml(answer.reaction || "")}</span>
+  `;
+
   $("feedbackBox").classList.remove("hidden");
   $("nextBtn").classList.remove("hidden");
 }
@@ -239,28 +287,29 @@ async function finishGame() {
   $("resultFace").textContent = customerFace(result.finalMood);
 
   if (result.finalMood === 100) {
-    $("resultTitle").textContent = "Perfect Customer Experience!";
-    $("resultMessage").textContent = "顧客非常滿意你今次嘅服務！";
+    $("resultTitle").textContent = "客戶非常滿意！";
+    $("resultMessage").textContent = "你為顧客提供了專業又貼心嘅服務。";
     $("rewardBox").innerHTML =
-      "🏆 <strong>100% Happy Customer!</strong><br>你已符合獎賞資格 🎁";
+      '<span class="trophy">🏆</span><div><strong>Happy Customer Award</strong><small>恭喜你！已符合獎賞資格 🎉</small></div>';
   } else if (result.finalMood >= 80) {
-    $("resultTitle").textContent = "Happy Customer!";
+    $("resultTitle").textContent = "客戶很滿意！";
     $("resultMessage").textContent = "做得好！再改善少少就可以挑戰 100%。";
     $("rewardBox").innerHTML =
-      "✨ <strong>差少少就 Perfect！</strong><br>再試一次，挑戰 100% 顧客滿意度。";
+      '<span class="trophy">✨</span><div><strong>差少少就 Perfect！</strong><small>再挑戰一次，向 100% 出發。</small></div>';
   } else if (result.finalMood >= 60) {
-    $("resultTitle").textContent = "Customer Satisfied";
+    $("resultTitle").textContent = "客戶滿意";
     $("resultMessage").textContent = "基本需要已處理，但仲有提升空間。";
     $("rewardBox").innerHTML =
-      "💡 <strong>Keep Going!</strong><br>留意顧客反應，再挑戰一次。";
+      '<span class="trophy">💡</span><div><strong>Keep Going!</strong><small>留意顧客反應，再試一次。</small></div>';
   } else {
-    $("resultTitle").textContent = "Room for Recovery";
-    $("resultMessage").textContent = "今次顧客體驗未如理想。";
+    $("resultTitle").textContent = "客戶有點失望";
+    $("resultMessage").textContent = "今次顧客體驗未如理想，再挑戰一次！";
     $("rewardBox").innerHTML =
-      "🔁 <strong>Try Again</strong><br>重新選擇更合適嘅回應。";
+      '<span class="trophy">🔁</span><div><strong>Try Again</strong><small>重新選擇更合適嘅回應。</small></div>';
   }
 
   showScreen("result");
+
   await submitResult(result);
 }
 
@@ -292,7 +341,7 @@ async function submitResult(result) {
     const data = await response.json();
 
     if (!data.ok) {
-      throw new Error(data.message || "儲存失敗");
+      throw new Error(data.message || "Save failed");
     }
 
     $("submitStatus").textContent = "成績已儲存 ✓";
@@ -311,7 +360,6 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-/* Buttons */
 $("goRulesBtn").addEventListener("click", () => {
   if (validateStaffId()) showScreen("rules");
 });
@@ -345,11 +393,15 @@ $("nextBtn").addEventListener("click", () => {
   }
 });
 
+$("retryBtn").addEventListener("click", () => {
+  resetGameState();
+  showScreen("rules");
+});
+
 $("restartBtn").addEventListener("click", () => {
   resetGameState();
   $("staffId").value = "";
   showScreen("landing");
 });
 
-/* Initial */
 showScreen("landing");

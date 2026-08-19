@@ -5,7 +5,7 @@ Keep your current Google Apps Script / Google Sheet setup.
 Replace the URL below with your deployed /exec URL.
 */
 
-const GAS_WEB_APP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__fDMdnIay7xwBgcQI0dKz7Ld3o-vE-WGvJuub_bE3iyH-UHQOWew1kg/exec";
 
 const SETTINGS = {
   totalQuestions: 10,

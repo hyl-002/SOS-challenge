@@ -1,0 +1,355 @@
+/*
+Customer Mood Challenge
+-----------------------
+1) Replace GAS_WEB_APP_URL with your deployed Google Apps Script Web App URL.
+2) Questions are loaded from the "Questions" sheet.
+3) Results are submitted to the "Results" sheet.
+*/
+
+const GAS_WEB_APP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+
+const SETTINGS = {
+  totalQuestions: 10,
+  startingMood: 40,
+  fullSpeedBonusSeconds: 150, // 2:30
+  fullSpeedBonusPoints: 10
+};
+
+let state = {
+  staffId: "",
+  questions: [],
+  currentIndex: 0,
+  mood: SETTINGS.startingMood,
+  startTime: null,
+  elapsedSeconds: 0,
+  timerId: null,
+  productBest: 0,
+  serviceBest: 0,
+  answers: [],
+  locked: false
+};
+
+const $ = (id) => document.getElementById(id);
+
+const screens = {
+  landing: $("screenLanding"),
+  rules: $("screenRules"),
+  loading: $("screenLoading"),
+  game: $("screenGame"),
+  result: $("screenResult")
+};
+
+function showScreen(name) {
+  Object.values(screens).forEach(el => el.classList.remove("active"));
+  screens[name].classList.add("active");
+}
+
+function formatTime(seconds) {
+  const mm = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const ss = String(seconds % 60).padStart(2, "0");
+  return `${mm}:${ss}`;
+}
+
+function customerFace(mood) {
+  if (mood >= 95) return "🤩";
+  if (mood >= 80) return "😄";
+  if (mood >= 65) return "🙂";
+  if (mood >= 45) return "😐";
+  if (mood >= 25) return "🙁";
+  return "😠";
+}
+
+function normalizeMood(value) {
+  return Math.max(0, Math.min(100, value));
+}
+
+function updateMoodUI() {
+  state.mood = normalizeMood(state.mood);
+  $("moodText").textContent = `${state.mood}%`;
+  $("moodFill").style.width = `${state.mood}%`;
+  $("customerFace").textContent = customerFace(state.mood);
+}
+
+function validateStaffId() {
+  const value = $("staffId").value.trim();
+  if (!value) {
+    $("landingMessage").textContent = "請輸入 Staff ID。";
+    return false;
+  }
+  state.staffId = value;
+  $("landingMessage").textContent = "";
+  return true;
+}
+
+async function fetchQuestions() {
+  if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("PASTE_YOUR")) {
+    throw new Error("未設定 Google Apps Script Web App URL。");
+  }
+
+  const url = `${GAS_WEB_APP_URL}?action=questions&t=${Date.now()}`;
+  const response = await fetch(url);
+
+  if (!response.ok) {
+    throw new Error("無法連接題目資料。");
+  }
+
+  const data = await response.json();
+
+  if (!data.ok) {
+    throw new Error(data.message || "讀取題目失敗。");
+  }
+
+  if (!Array.isArray(data.questions) || data.questions.length < SETTINGS.totalQuestions) {
+    throw new Error(`Questions sheet 至少需要 ${SETTINGS.totalQuestions} 條啟用題目。`);
+  }
+
+  // V1: take first 10 active questions.
+  // You can later change this to random selection.
+  state.questions = data.questions.slice(0, SETTINGS.totalQuestions);
+}
+
+function startTimer() {
+  state.startTime = Date.now();
+  state.elapsedSeconds = 0;
+  $("timerText").textContent = "00:00";
+
+  state.timerId = setInterval(() => {
+    state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+    $("timerText").textContent = formatTime(state.elapsedSeconds);
+  }, 250);
+}
+
+function stopTimer() {
+  if (state.timerId) {
+    clearInterval(state.timerId);
+    state.timerId = null;
+  }
+  state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+}
+
+function resetGameState() {
+  stopTimer();
+
+  state.currentIndex = 0;
+  state.mood = SETTINGS.startingMood;
+  state.startTime = null;
+  state.elapsedSeconds = 0;
+  state.productBest = 0;
+  state.serviceBest = 0;
+  state.answers = [];
+  state.locked = false;
+
+  updateMoodUI();
+}
+
+function renderQuestion() {
+  state.locked = false;
+
+  const q = state.questions[state.currentIndex];
+  const number = state.currentIndex + 1;
+
+  $("questionCounter").textContent = `Question ${number} / ${SETTINGS.totalQuestions}`;
+  $("questionType").textContent = q.type;
+  $("progressFill").style.width = `${(number / SETTINGS.totalQuestions) * 100}%`;
+  $("questionText").textContent = q.question;
+
+  $("feedbackBox").classList.add("hidden");
+  $("feedbackBox").innerHTML = "";
+  $("nextBtn").classList.add("hidden");
+
+  const answerList = $("answerList");
+  answerList.innerHTML = "";
+
+  q.answers.forEach((answer, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "answer-btn";
+    button.innerHTML = `<strong>${String.fromCharCode(65 + index)}.</strong> ${escapeHtml(answer.text)}`;
+
+    button.addEventListener("click", () => selectAnswer(q, answer, index, button));
+    answerList.appendChild(button);
+  });
+}
+
+function selectAnswer(question, answer, answerIndex, button) {
+  if (state.locked) return;
+  state.locked = true;
+
+  document.querySelectorAll(".answer-btn").forEach(btn => {
+    btn.disabled = true;
+  });
+
+  button.classList.add("selected");
+
+  const moodBefore = state.mood;
+  state.mood += Number(answer.score || 0);
+  updateMoodUI();
+
+  if (answer.isBest) {
+    if (String(question.type).toLowerCase() === "product") state.productBest++;
+    if (String(question.type).toLowerCase() === "service") state.serviceBest++;
+  }
+
+  state.answers.push({
+    questionId: question.id,
+    type: question.type,
+    selectedOption: String.fromCharCode(65 + answerIndex),
+    selectedText: answer.text,
+    score: Number(answer.score || 0),
+    isBest: Boolean(answer.isBest),
+    moodBefore,
+    moodAfter: state.mood
+  });
+
+  let moodLabel = "Customer Mood —";
+  if (Number(answer.score) > 0) moodLabel = "Customer Mood ↑";
+  if (Number(answer.score) < 0) moodLabel = "Customer Mood ↓";
+
+  $("feedbackBox").innerHTML =
+    `<strong>${moodLabel}</strong><span>${escapeHtml(answer.reaction || "")}</span>`;
+  $("feedbackBox").classList.remove("hidden");
+  $("nextBtn").classList.remove("hidden");
+}
+
+function calculateResult() {
+  const speedBonus =
+    state.elapsedSeconds <= SETTINGS.fullSpeedBonusSeconds
+      ? SETTINGS.fullSpeedBonusPoints
+      : 0;
+
+  const finalMood = normalizeMood(state.mood + speedBonus);
+
+  return {
+    finalMood,
+    speedBonus,
+    qualified: finalMood === 100
+  };
+}
+
+async function finishGame() {
+  stopTimer();
+
+  const result = calculateResult();
+
+  $("finalMood").textContent = `${result.finalMood}%`;
+  $("completionTime").textContent = formatTime(state.elapsedSeconds);
+  $("speedBonus").textContent = `+${result.speedBonus}`;
+  $("productScore").textContent = `${state.productBest} / 7`;
+  $("serviceScore").textContent = `${state.serviceBest} / 3`;
+  $("resultFace").textContent = customerFace(result.finalMood);
+
+  if (result.finalMood === 100) {
+    $("resultTitle").textContent = "Perfect Customer Experience!";
+    $("resultMessage").textContent = "顧客非常滿意你今次嘅服務！";
+    $("rewardBox").innerHTML =
+      "🏆 <strong>100% Happy Customer!</strong><br>你已符合獎賞資格 🎁";
+  } else if (result.finalMood >= 80) {
+    $("resultTitle").textContent = "Happy Customer!";
+    $("resultMessage").textContent = "做得好！再改善少少就可以挑戰 100%。";
+    $("rewardBox").innerHTML =
+      "✨ <strong>差少少就 Perfect！</strong><br>再試一次，挑戰 100% 顧客滿意度。";
+  } else if (result.finalMood >= 60) {
+    $("resultTitle").textContent = "Customer Satisfied";
+    $("resultMessage").textContent = "基本需要已處理，但仲有提升空間。";
+    $("rewardBox").innerHTML =
+      "💡 <strong>Keep Going!</strong><br>留意顧客反應，再挑戰一次。";
+  } else {
+    $("resultTitle").textContent = "Room for Recovery";
+    $("resultMessage").textContent = "今次顧客體驗未如理想。";
+    $("rewardBox").innerHTML =
+      "🔁 <strong>Try Again</strong><br>重新選擇更合適嘅回應。";
+  }
+
+  showScreen("result");
+  await submitResult(result);
+}
+
+async function submitResult(result) {
+  $("submitStatus").textContent = "正在儲存成績…";
+
+  const payload = {
+    action: "submitResult",
+    staffId: state.staffId,
+    finalMood: result.finalMood,
+    productScore: state.productBest,
+    serviceScore: state.serviceBest,
+    completionSeconds: state.elapsedSeconds,
+    completionTime: formatTime(state.elapsedSeconds),
+    speedBonus: result.speedBonus,
+    qualified: result.qualified ? "Yes" : "No",
+    answers: state.answers
+  };
+
+  try {
+    const response = await fetch(GAS_WEB_APP_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8"
+      },
+      body: JSON.stringify(payload)
+    });
+
+    const data = await response.json();
+
+    if (!data.ok) {
+      throw new Error(data.message || "儲存失敗");
+    }
+
+    $("submitStatus").textContent = "成績已儲存 ✓";
+  } catch (error) {
+    console.error(error);
+    $("submitStatus").textContent = "成績未能儲存，請通知活動負責人。";
+  }
+}
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+/* Buttons */
+$("goRulesBtn").addEventListener("click", () => {
+  if (validateStaffId()) showScreen("rules");
+});
+
+$("backBtn").addEventListener("click", () => {
+  showScreen("landing");
+});
+
+$("startBtn").addEventListener("click", async () => {
+  showScreen("loading");
+
+  try {
+    await fetchQuestions();
+    resetGameState();
+    showScreen("game");
+    renderQuestion();
+    startTimer();
+  } catch (error) {
+    console.error(error);
+    showScreen("rules");
+    alert(error.message);
+  }
+});
+
+$("nextBtn").addEventListener("click", () => {
+  if (state.currentIndex < SETTINGS.totalQuestions - 1) {
+    state.currentIndex++;
+    renderQuestion();
+  } else {
+    finishGame();
+  }
+});
+
+$("restartBtn").addEventListener("click", () => {
+  resetGameState();
+  $("staffId").value = "";
+  showScreen("landing");
+});
+
+/* Initial */
+showScreen("landing");

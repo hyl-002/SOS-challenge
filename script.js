@@ -6,7 +6,7 @@ Customer Mood Challenge
 3) Results are submitted to the "Results" sheet.
 */
 
-const GAS_WEB_APP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
+const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__fDMdnIay7xwBgcQI0dKz7Ld3o-vE-WGvJuub_bE3iyH-UHQOWew1kg/exec";
 
 const SETTINGS = {
   totalQuestions: 10,

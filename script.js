@@ -499,10 +499,6 @@ $("nextBtn").addEventListener("click", () => {
   }
 });
 
-$("retryBtn").addEventListener("click", () => {
-  resetGameState();
-  showScreen("rules");
-});
 
 $("restartBtn").addEventListener("click", () => {
   resetGameState();

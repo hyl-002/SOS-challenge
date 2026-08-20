@@ -58,13 +58,25 @@ function formatTime(seconds) {
   return `${m}:${s}`;
 }
 
-function customerFace(mood) {
-  if (mood >= 95) return "🙆🏻‍♀️";
-  if (mood >= 80) return "🙋🏻‍♀️";
-  if (mood >= 65) return "💁🏻‍♀️";
-  if (mood >= 45) return "🙍🏻‍♀️";
-  if (mood >= 25) return "🙎🏻‍♀️";
-  return "😠";
+function customerImage(mood) {
+
+  if (mood >= 95) {
+    return "images/customer-delighted.png";
+  }
+
+  if (mood >= 80) {
+    return "images/customer-happy.png";
+  }
+
+  if (mood >= 60) {
+    return "images/customer-neutral.png";
+  }
+
+  if (mood >= 30) {
+    return "images/customer-unhappy.png";
+  }
+
+  return "images/customer-angry.png";
 }
 
 function normalizeMood(value) {
@@ -75,8 +87,11 @@ function updateMoodUI() {
   state.mood = normalizeMood(state.mood);
 
   $("moodText").textContent = `${state.mood}%`;
-  $("moodEmoji").textContent = customerFace(state.mood);
-  $("customerFace").textContent = customerFace(state.mood);
+$("customerFace").src =
+  customerImage(state.mood);
+
+$("moodEmoji").src =
+  customerImage(state.mood);
 
   const gauge = document.querySelector(".mood-gauge");
   if (gauge) {
@@ -379,7 +394,11 @@ async function finishGame() {
   $("speedBonus").textContent = `+${result.speedBonus}`;
   $("productScore").textContent = `${state.productBest} / 7`;
   $("serviceScore").textContent = `${state.serviceBest} / 3`;
-  $("resultFace").textContent = customerFace(result.finalMood);
+$("resultFace").src =
+  customerImage(result.finalMood);
+
+$("resultCustomer").src =
+  customerImage(result.finalMood);
 
 if (result.finalMood === 100) {
 

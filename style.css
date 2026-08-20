@@ -374,3 +374,107 @@ button{cursor:pointer}
     font-size: 14px;
   }
 }
+
+/* =================================================
+   LOCK GAME TO VIEWPORT - NO PAGE SCROLL
+================================================= */
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100dvh;
+
+  touch-action: manipulation;
+}
+
+
+/* 整隻 game 固定喺 browser viewport */
+.game-shell {
+  position: fixed;
+
+  top: 0;
+  left: 50%;
+
+  transform: translateX(-50%);
+
+  width: min(760px, 100%);
+  height: 100dvh;
+
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+
+/* 每一頁都固定一個 viewport 高度 */
+.screen {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  display: none;
+}
+
+
+.screen.active {
+  display: block;
+}
+
+
+/* Landing */
+.landing-screen {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+
+/* Rules */
+.rules-page {
+  height: calc(100% - 70px);
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+
+/* Game */
+.game-screen {
+  height: 100%;
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+
+/* Result */
+.result-screen {
+  height: 100%;
+  min-height: 0;
+
+  overflow: hidden;
+}
+
+
+/* Loading */
+.loading-page {
+  height: 100%;
+  min-height: 0;
+}

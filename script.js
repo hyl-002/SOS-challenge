@@ -41,7 +41,22 @@ const screens = {
 function showScreen(name) {
   Object.values(screens).forEach(el => el.classList.remove("active"));
   screens[name].classList.add("active");
-  window.scrollTo(0, 0);
+
+  // Force mobile Safari back to the very top
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
+  requestAnimationFrame(() => {
+    window.scrollTo({
+      top: 0,
+      left: 0,
+      behavior: "instant"
+    });
+  });
+
+  setTimeout(() => {
+    window.scrollTo(0, 0);
+  }, 50);
 }
 
 function formatTime(seconds) {

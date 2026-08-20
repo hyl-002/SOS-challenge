@@ -108,17 +108,104 @@ function buildStepDots() {
   }
 }
 
-function validateStaffId() {
-  const value = $("staffId").value.trim();
+async function validateStaffId() {
+
+  const value =
+    $("staffId").value.trim();
+
 
   if (!value) {
-    $("landingMessage").textContent = "請輸入 Staff ID。";
+
+    $("landingMessage").textContent =
+      "請輸入 Staff ID。";
+
     return false;
+
   }
 
-  state.staffId = value;
-  $("landingMessage").textContent = "";
-  return true;
+
+  $("landingMessage").textContent =
+    "正在驗證 Staff ID…";
+
+
+  $("goRulesBtn").disabled = true;
+
+
+  try {
+
+    const url =
+      `${GAS_WEB_APP_URL}` +
+      `?action=validateStaff` +
+      `&staffId=${encodeURIComponent(value)}` +
+      `&t=${Date.now()}`;
+
+
+    const response =
+      await fetch(url);
+
+
+    if (!response.ok) {
+
+      throw new Error(
+        "Unable to validate Staff ID."
+      );
+
+    }
+
+
+    const data =
+      await response.json();
+
+
+    if (!data.ok) {
+
+      throw new Error(
+        data.message ||
+        "Validation failed."
+      );
+
+    }
+
+
+    if (!data.valid) {
+
+      $("landingMessage").textContent =
+        data.message ||
+        "Staff ID not found.";
+
+      return false;
+
+    }
+
+
+    state.staffId =
+      value;
+
+
+    $("landingMessage").textContent =
+      "✓ Staff ID verified";
+
+
+    return true;
+
+
+  } catch (error) {
+
+    console.error(error);
+
+    $("landingMessage").textContent =
+      "暫時無法驗證 Staff ID，請稍後再試。";
+
+    return false;
+
+
+  } finally {
+
+    $("goRulesBtn").disabled =
+      false;
+
+  }
+
 }
 
 async function fetchQuestions() {
@@ -375,10 +462,21 @@ function escapeHtml(value) {
     .replaceAll("'", "&#039;");
 }
 
-$("goRulesBtn").addEventListener("click", () => {
-  if (validateStaffId()) showScreen("rules");
-});
+$("goRulesBtn").addEventListener(
+  "click",
+  async () => {
 
+    const valid =
+      await validateStaffId();
+
+    if (valid) {
+
+      showScreen("rules");
+
+    }
+
+  }
+);
 $("backBtn").addEventListener("click", () => {
   showScreen("landing");
 });

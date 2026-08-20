@@ -7,6 +7,10 @@ Replace the URL below with your deployed /exec URL.
 
 const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__fDMdnIay7xwBgcQI0dKz7Ld3o-vE-WGvJuub_bE3iyH-UHQOWew1kg/exec";
 
+if ("scrollRestoration" in history) {
+  history.scrollRestoration = "manual";
+}
+
 const SETTINGS = {
   totalQuestions: 10,
   startingMood: 40,
@@ -39,24 +43,13 @@ const screens = {
 };
 
 function showScreen(name) {
-  Object.values(screens).forEach(el => el.classList.remove("active"));
-  screens[name].classList.add("active");
 
-  // Force mobile Safari back to the very top
-  document.documentElement.scrollTop = 0;
-  document.body.scrollTop = 0;
-
-  requestAnimationFrame(() => {
-    window.scrollTo({
-      top: 0,
-      left: 0,
-      behavior: "instant"
-    });
+  Object.values(screens).forEach(screen => {
+    screen.classList.remove("active");
   });
 
-  setTimeout(() => {
-    window.scrollTo(0, 0);
-  }, 50);
+  screens[name].classList.add("active");
+
 }
 
 function formatTime(seconds) {

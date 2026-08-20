@@ -59,11 +59,11 @@ function formatTime(seconds) {
 }
 
 function customerFace(mood) {
-  if (mood >= 95) return "🤩";
-  if (mood >= 80) return "😄";
-  if (mood >= 65) return "🙂";
-  if (mood >= 45) return "😐";
-  if (mood >= 25) return "🙁";
+  if (mood >= 95) return "🙆🏻‍♀️";
+  if (mood >= 80) return "🙋🏻‍♀️";
+  if (mood >= 65) return "💁🏻‍♀️";
+  if (mood >= 45) return "🙍🏻‍♀️";
+  if (mood >= 25) return "🙎🏻‍♀️";
   return "😠";
 }
 

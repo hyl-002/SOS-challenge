@@ -381,27 +381,47 @@ async function finishGame() {
   $("serviceScore").textContent = `${state.serviceBest} / 3`;
   $("resultFace").textContent = customerFace(result.finalMood);
 
-  if (result.finalMood === 100) {
-    $("resultTitle").textContent = "客戶非常滿意！";
-    $("resultMessage").textContent = "你為顧客提供了專業又貼心嘅服務。";
-    $("rewardBox").innerHTML =
-      '<span class="trophy">🏆</span><div><strong>Happy Customer Award</strong><small>恭喜你！已符合獎賞資格 🎉</small></div>';
-  } else if (result.finalMood >= 80) {
-    $("resultTitle").textContent = "客戶很滿意！";
-    $("resultMessage").textContent = "做得好！再改善少少就可以挑戰 100%。";
-    $("rewardBox").innerHTML =
-      '<span class="trophy">✨</span><div><strong>差少少就 Perfect！</strong><small>再挑戰一次，向 100% 出發。</small></div>';
-  } else if (result.finalMood >= 60) {
-    $("resultTitle").textContent = "客戶滿意";
-    $("resultMessage").textContent = "基本需要已處理，但仲有提升空間。";
-    $("rewardBox").innerHTML =
-      '<span class="trophy">💡</span><div><strong>Keep Going!</strong><small>留意顧客反應，再試一次。</small></div>';
-  } else {
-    $("resultTitle").textContent = "客戶有點失望";
-    $("resultMessage").textContent = "今次顧客體驗未如理想，再挑戰一次！";
-    $("rewardBox").innerHTML =
-      '<span class="trophy">🔁</span><div><strong>Try Again</strong><small>重新選擇更合適嘅回應。</small></div>';
-  }
+if (result.finalMood === 100) {
+
+  $("resultTitle").textContent = "客戶非常滿意！";
+
+  $("resultMessage").textContent = "你為顧客提供了專業又貼心嘅服務。";
+
+  $("rewardBox").innerHTML =
+
+    '<span class="trophy">🏆</span><div><strong>Happy Customer Award</strong><small>恭喜你！已符合獎賞資格 🎉</small></div>';
+
+} else if (result.finalMood >= 80) {
+
+  $("resultTitle").textContent = "客戶很滿意！";
+
+  $("resultMessage").textContent = "表現不錯！你已為顧客提供良好的服務體驗。";
+
+  $("rewardBox").innerHTML =
+
+    '<span class="trophy">✨</span><div><strong>Great Job!</strong><small>你距離 100% Happy Customer 只差一點！</small></div>';
+
+} else if (result.finalMood >= 60) {
+
+  $("resultTitle").textContent = "客戶滿意";
+
+  $("resultMessage").textContent = "顧客的基本需要已得到處理，但仍有提升空間。";
+
+  $("rewardBox").innerHTML =
+
+    '<span class="trophy">💡</span><div><strong>Keep Learning!</strong><small>留意顧客需要及回應方式，可進一步提升服務體驗。</small></div>';
+
+} else {
+
+  $("resultTitle").textContent = "客戶有點失望";
+
+  $("resultMessage").textContent = "今次顧客體驗未如理想，部分回應仍有改善空間。";
+
+  $("rewardBox").innerHTML =
+
+    '<span class="trophy">📘</span><div><strong>Learning Opportunity</strong><small>可重溫相關產品知識及服務技巧，掌握更合適的處理方式。</small></div>';
+
+}
 
   showScreen("result");
 

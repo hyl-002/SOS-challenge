@@ -239,3 +239,138 @@ button{cursor:pointer}
     font-size: 11px;
   }
 }
+/* ===== MOBILE RESULT PAGE COMPACT ===== */
+@media (max-width: 560px) {
+
+  /* 頂部標題縮短 */
+  .result-title {
+    height: 60px;
+    font-size: 26px;
+  }
+
+  /* Result 場景由 370px 縮短 */
+  .result-scene {
+    height: 270px;
+  }
+
+  /* 顧客細啲 */
+  .result-person {
+    font-size: 100px;
+    left: 2%;
+    bottom: 0;
+  }
+
+  /* 上方評語框縮細 */
+  .result-bubble {
+    left: 4%;
+    top: 14px;
+    width: 66%;
+    padding: 11px 13px;
+    border-radius: 16px;
+  }
+
+  .result-bubble > span {
+    font-size: 11px;
+  }
+
+  .result-bubble strong {
+    font-size: 20px;
+    margin-top: 3px;
+  }
+
+  .result-bubble p {
+    font-size: 13px;
+    line-height: 1.35;
+    margin-top: 4px;
+  }
+
+  /* 100% gauge 細啲及移高 */
+  .final-gauge {
+    width: 100px;
+    height: 100px;
+    top: 135px;
+    right: 2%;
+    border-width: 8px;
+  }
+
+  .final-gauge small {
+    font-size: 9px;
+  }
+
+  .final-gauge span {
+    font-size: 23px;
+  }
+
+  .final-gauge strong {
+    font-size: 25px;
+  }
+
+  /* Summary card 整體收窄 */
+  .summary-card {
+    margin: -6px 10px 14px;
+    padding: 12px;
+    border-radius: 17px;
+  }
+
+  .summary-card h3 {
+    margin: 0 0 7px;
+    font-size: 18px;
+  }
+
+  /* 四行結果收窄 */
+  .summary-row {
+    grid-template-columns: 30px 1fr auto;
+    padding: 8px 10px;
+    min-height: 48px;
+  }
+
+  .summary-row > span {
+    font-size: 18px;
+  }
+
+  .summary-row b {
+    font-size: 14px;
+  }
+
+  .summary-row strong {
+    font-size: 17px;
+  }
+
+  /* Award card 收窄 */
+  .award {
+    margin-top: 9px;
+    padding: 9px 11px;
+    gap: 9px;
+  }
+
+  .trophy {
+    font-size: 32px;
+  }
+
+  .award strong {
+    font-size: 15px;
+  }
+
+  .award small {
+    font-size: 11px;
+  }
+
+  /* 儲存成績文字唔好佔太多位 */
+  #submitStatus {
+    margin: 7px 0 0;
+    min-height: 14px;
+    font-size: 11px;
+  }
+
+  /* 底部兩個按鈕再矮少少 */
+  .result-buttons {
+    margin-top: 8px;
+    gap: 7px;
+  }
+
+  .white-btn,
+  .outline-btn {
+    padding: 10px 8px;
+    font-size: 14px;
+  }
+}

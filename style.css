@@ -87,34 +87,155 @@ button{cursor:pointer}
   .result-person{font-size:125px;left:2%}.result-bubble{width:68%}.final-gauge{width:120px;height:120px;top:177px;right:2%}.final-gauge strong{font-size:28px}
   .result-buttons{grid-template-columns:1fr}
 }
-/* ===== MOBILE NEXT BUTTON FIX ===== */
-
+/* ===== MOBILE COMPACT LAYOUT ===== */
 @media (max-width: 560px) {
 
-  /* 預留空間俾 fixed 繼續掣 */
+  /* 頂部收窄少少 */
+  .game-head {
+    height: 58px;
+    padding: 0 14px;
+  }
+
+  .game-title {
+    font-size: 15px;
+  }
+
+  .time-chip {
+    padding: 7px 9px;
+    font-size: 14px;
+  }
+
+  /* progress area 收窄 */
+  .progress-bar-area {
+    padding: 7px 14px 9px;
+  }
+
+  .progress-title strong {
+    font-size: 21px;
+  }
+
+  .step-dots {
+    gap: 4px;
+    margin-top: 4px;
+  }
+
+  .step-dot {
+    height: 26px;
+    font-size: 11px;
+  }
+
+  /* 最主要：縮短場景高度 */
+  .race-scene {
+    height: 300px;
+  }
+
+  /* 顧客細少少 */
+  .game-customer {
+    font-size: 108px;
+    left: 2%;
+    bottom: 12px;
+  }
+
+  /* mood meter 細少少 */
+  .mood-gauge {
+    width: 88px;
+    height: 88px;
+    right: 2%;
+    top: 10px;
+    padding: 7px;
+  }
+
+  .mood-inner small {
+    font-size: 9px;
+  }
+
+  .mood-inner span {
+    font-size: 18px;
+  }
+
+  .mood-inner strong {
+    font-size: 19px;
+  }
+
+  /* speech bubble 收細 */
+  .customer-bubble {
+    left: 34%;
+    width: 63%;
+    bottom: 18px;
+    min-height: 96px;
+    padding: 11px 13px;
+  }
+
+  .customer-bubble strong {
+    font-size: 13px;
+  }
+
+  .customer-bubble p {
+    font-size: 14px;
+    line-height: 1.4;
+    margin-top: 4px;
+  }
+
+  /* answer panel 收窄 */
   .answer-panel {
-    padding-bottom: 105px;
+    padding: 13px 14px 18px;
   }
 
-  /* 答題後，繼續掣固定在畫面底部 */
-  #nextBtn:not(.hidden) {
-    position: fixed;
-    left: 16px;
-    right: 16px;
-    bottom: calc(16px + env(safe-area-inset-bottom));
-    width: auto;
-
-    margin: 0;
-
-    z-index: 9999;
-
-    padding: 15px 20px;
-
-    border-radius: 16px;
-
-    box-shadow:
-      0 5px 0 #ca9800,
-      0 8px 25px rgba(0, 0, 0, 0.28);
+  .answer-title {
+    margin-bottom: 8px;
   }
 
+  .headset {
+    font-size: 26px;
+  }
+
+  .answer-title h3 {
+    font-size: 17px;
+  }
+
+  .answer-title p {
+    font-size: 12px;
+  }
+
+  /* 選項高度壓縮 */
+  .answer-list {
+    gap: 7px;
+  }
+
+  .answer-btn {
+    min-height: 54px;
+    padding: 10px 12px 10px 52px;
+    font-size: 14px;
+    line-height: 1.35;
+    border-radius: 13px;
+  }
+
+  .answer-letter {
+    width: 30px;
+    height: 30px;
+    left: 11px;
+    font-size: 14px;
+  }
+
+  /* feedback 收窄 */
+  .feedback {
+    margin-top: 8px;
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
+  /* 繼續掣 keep normal flow */
+  #nextBtn {
+    position: static !important;
+    width: 100%;
+    margin-top: 9px;
+    padding: 12px 14px;
+  }
+
+  /* 最底提示都細少少 */
+  .tip {
+    margin-top: 9px;
+    padding: 8px 10px;
+    font-size: 11px;
+  }
 }

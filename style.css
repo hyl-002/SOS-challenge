@@ -87,3 +87,34 @@ button{cursor:pointer}
   .result-person{font-size:125px;left:2%}.result-bubble{width:68%}.final-gauge{width:120px;height:120px;top:177px;right:2%}.final-gauge strong{font-size:28px}
   .result-buttons{grid-template-columns:1fr}
 }
+/* ===== MOBILE NEXT BUTTON FIX ===== */
+
+@media (max-width: 560px) {
+
+  /* 預留空間俾 fixed 繼續掣 */
+  .answer-panel {
+    padding-bottom: 105px;
+  }
+
+  /* 答題後，繼續掣固定在畫面底部 */
+  #nextBtn:not(.hidden) {
+    position: fixed;
+    left: 16px;
+    right: 16px;
+    bottom: calc(16px + env(safe-area-inset-bottom));
+    width: auto;
+
+    margin: 0;
+
+    z-index: 9999;
+
+    padding: 15px 20px;
+
+    border-radius: 16px;
+
+    box-shadow:
+      0 5px 0 #ca9800,
+      0 8px 25px rgba(0, 0, 0, 0.28);
+  }
+
+}

@@ -231,10 +231,19 @@ const screens = {
 function showScreen(name) {
 
   Object.values(screens).forEach(screen => {
+
     screen.classList.remove("active");
+
   });
 
+
   screens[name].classList.add("active");
+
+
+  /*
+    每次換 screen 都固定返 viewport
+  */
+  forceViewportTop();
 
 }
 
@@ -628,9 +637,11 @@ if (result.finalMood === 100) {
 
 }
 
-  showScreen("result");
+  forceViewportTop();
 
-  await submitResult(result);
+showScreen("result");
+
+await submitResult(result);
 }
 
 async function submitResult(result) {
@@ -687,11 +698,42 @@ $("goRulesBtn").addEventListener(
     const valid =
       await validateStaffId();
 
-    if (valid) {
 
-      showScreen("rules");
-
+    if (!valid) {
+      return;
     }
+
+
+    /*
+      1. 先令 Staff ID input 失去 focus
+      → iPhone keyboard 開始收起
+    */
+    $("staffId").blur();
+
+
+    /*
+      2. 等 keyboard 真正收起，
+      Safari viewport 回復正常
+    */
+    await waitForKeyboardClose();
+
+
+    /*
+      3. 再固定遊戲高度
+    */
+    setAppHeight();
+
+
+    /*
+      4. 強制返最頂
+    */
+    forceViewportTop();
+
+
+    /*
+      5. 最後先入 Rules page
+    */
+    showScreen("rules");
 
   }
 );
@@ -699,21 +741,44 @@ $("backBtn").addEventListener("click", () => {
   showScreen("landing");
 });
 
-$("startBtn").addEventListener("click", async () => {
-  showScreen("loading");
+$("startBtn").addEventListener(
+  "click",
+  async () => {
 
-  try {
-    await fetchQuestions();
-    resetGameState();
-    showScreen("game");
-    renderQuestion();
-    startTimer();
-  } catch (error) {
-    console.error(error);
-    showScreen("rules");
-    alert(error.message);
+    forceViewportTop();
+
+    showScreen("loading");
+
+
+    try {
+
+      await fetchQuestions();
+
+      resetGameState();
+
+      forceViewportTop();
+
+      showScreen("game");
+
+      renderQuestion();
+
+      startTimer();
+
+
+    } catch (error) {
+
+      console.error(error);
+
+      forceViewportTop();
+
+      showScreen("rules");
+
+      alert(error.message);
+
+    }
+
   }
-});
+);
 
 $("nextBtn").addEventListener("click", () => {
   if (state.currentIndex < SETTINGS.totalQuestions - 1) {

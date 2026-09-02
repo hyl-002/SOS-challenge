@@ -50,7 +50,16 @@ button{cursor:pointer}
 .progress-title{display:flex;justify-content:space-between;align-items:end}.progress-title small{display:block}.progress-title strong{display:block;font-size:23px;color:var(--yellow)}.progress-title>span{font-size:12px;background:rgba(0,0,0,.18);padding:5px 9px;border-radius:999px}
 .step-dots{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;margin-top:6px}.step-dot{height:29px;border-radius:50%;display:grid;place-items:center;background:rgba(5,45,83,.5);font-size:12px;font-weight:800}.step-dot.active,.step-dot.done{background:var(--yellow);color:var(--navy)}.step-dot.active{transform:scale(1.1)}
 
-.race-scene{position:relative;height:390px;overflow:hidden;background:linear-gradient(#85d0f4 0 53%,#63ab4c 54%)}
+.race-scene {
+  position: relative;
+  height: 390px;
+  overflow: hidden;
+
+  background-image: url("images/racecourse-bg.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
 .cloud{position:absolute;background:rgba(255,255,255,.7);border-radius:50%}.cloud1{width:100px;height:30px;left:12%;top:40px}.cloud2{width:120px;height:34px;right:14%;top:65px}
 .stands{position:absolute;left:-5%;bottom:70px;width:48%;height:145px;background:linear-gradient(160deg,#c8d3da 0 34%,#69767f 35% 46%,#d7dde1 47% 58%,#727f87 59%);clip-path:polygon(0 28%,100% 0,100% 100%,0 100%);opacity:.92}
 .race-track{position:absolute;left:43%;right:-12%;bottom:-55px;height:190px;border:22px solid #6b767e;border-radius:50%;transform:rotate(-8deg);box-shadow:inset 0 0 0 5px #fff}

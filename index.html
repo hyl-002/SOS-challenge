@@ -9,22 +9,22 @@
 <body>
 <main class="game-shell">
 
-  <section id="screenLanding" class="screen active">
+<section id="screenLanding" class="screen active">
 
   <div class="landing-game">
 
+    <!-- TITLE -->
     <div class="landing-topbar">
       <div>
         <span class="landing-kicker">ICC 開季互動挑戰</span>
         <h1>Customer Mood Challenge</h1>
       </div>
 
-      <div class="landing-badge">
-        🎮
-      </div>
+      <div class="landing-badge">🎮</div>
     </div>
 
 
+    <!-- GAME PREVIEW -->
     <div class="landing-stage">
 
       <img
@@ -40,22 +40,22 @@
       >
 
 
+      <!-- STARTING MOOD -->
       <div class="landing-mood-card">
 
-        <span>STARTING MOOD</span>
+        <small>STARTING<br>MOOD</small>
 
-        <div class="landing-mood-face">
-          <img
-            src="images/customer-neutral.png"
-            alt=""
-          >
-        </div>
+        <img
+          src="images/customer-neutral.png"
+          alt=""
+        >
 
         <strong>40%</strong>
 
       </div>
 
 
+      <!-- CUSTOMER SPEECH -->
       <div class="bubble landing-speech">
 
         <strong>今日由你接待我！</strong>
@@ -69,6 +69,87 @@
       </div>
 
     </div>
+
+
+    <!-- LOWER PANEL -->
+    <div class="landing-panel">
+
+      <div class="landing-mission-title">
+
+        <span class="mission-icon">🎧</span>
+
+        <div>
+          <h2>準備好接受挑戰？</h2>
+          <p>準確回答 · 貼心服務 · 快速完成</p>
+        </div>
+
+      </div>
+
+
+      <div class="landing-quick-info">
+
+        <div class="quick-info-item">
+          <span>💬</span>
+          <strong>10題</strong>
+          <small>顧客情境</small>
+        </div>
+
+        <div class="quick-info-item">
+          <span>⚡</span>
+          <strong>2:30</strong>
+          <small>速度獎分</small>
+        </div>
+
+        <div class="quick-info-item">
+          <span>🏆</span>
+          <strong>100%</strong>
+          <small>獎賞目標</small>
+        </div>
+
+      </div>
+
+
+      <div class="staff-entry">
+
+        <label for="staffId">
+          輸入 Staff ID 開始挑戰
+        </label>
+
+        <div class="staff-input-wrap">
+
+          <span class="staff-icon">👤</span>
+
+          <input
+            id="staffId"
+            type="text"
+            inputmode="numeric"
+            autocomplete="off"
+            placeholder="Staff ID"
+          >
+
+        </div>
+
+      </div>
+
+
+      <button
+        id="goRulesBtn"
+        class="yellow-btn landing-start-btn"
+      >
+        開始挑戰 ▶
+      </button>
+
+
+      <p
+        id="landingMessage"
+        class="status"
+      ></p>
+
+    </div>
+
+  </div>
+
+</section>
 
 
     <div class="landing-panel">

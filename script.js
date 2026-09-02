@@ -10,7 +10,193 @@ const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
+/* =================================================
+   IPHONE KEYBOARD / VIEWPORT FIX
+================================================= */
 
+/*
+  記住遊戲第一次開啟時嘅正常高度。
+  iPhone keyboard 彈出後，唔俾個 game 跟住縮細。
+*/
+let appBaseHeight = window.innerHeight;
+
+
+/* 將正常高度傳俾 CSS */
+function setAppHeight() {
+
+  document.documentElement.style.setProperty(
+    "--app-height",
+    `${appBaseHeight}px`
+  );
+
+}
+
+
+/*
+  將 Safari 畫面強制回復最頂
+*/
+function forceViewportTop() {
+
+  document.documentElement.scrollTop = 0;
+  document.body.scrollTop = 0;
+
+  window.scrollTo(0, 0);
+
+}
+
+
+/*
+  等 iPhone keyboard 真正收起先轉頁
+*/
+function waitForKeyboardClose() {
+
+  return new Promise(resolve => {
+
+    /*
+      冇 visualViewport 都照樣可以用
+    */
+    if (!window.visualViewport) {
+
+      setTimeout(() => {
+
+        forceViewportTop();
+        resolve();
+
+      }, 300);
+
+      return;
+    }
+
+
+    let stableCount = 0;
+    let lastHeight =
+      window.visualViewport.height;
+
+
+    const checkViewport = () => {
+
+      const currentHeight =
+        window.visualViewport.height;
+
+
+      /*
+        Keyboard 收起之後，
+        visual viewport 應該會接近原本正常高度
+      */
+      const closeEnough =
+        currentHeight >=
+        appBaseHeight * 0.85;
+
+
+      /*
+        連續幾次高度冇再變，
+        代表 Safari 已經完成 resize
+      */
+      if (
+        Math.abs(
+          currentHeight -
+          lastHeight
+        ) < 2
+      ) {
+
+        stableCount++;
+
+      } else {
+
+        stableCount = 0;
+
+      }
+
+
+      lastHeight =
+        currentHeight;
+
+
+      if (
+        closeEnough &&
+        stableCount >= 2
+      ) {
+
+        forceViewportTop();
+
+        resolve();
+
+        return;
+
+      }
+
+
+      setTimeout(
+        checkViewport,
+        60
+      );
+
+    };
+
+
+    /*
+      最多等一陣，避免 Safari 卡住
+    */
+    setTimeout(() => {
+
+      forceViewportTop();
+      resolve();
+
+    }, 700);
+
+
+    requestAnimationFrame(
+      checkViewport
+    );
+
+  });
+
+}
+
+
+/*
+  首次載入固定正常遊戲高度
+*/
+setAppHeight();
+
+
+/*
+  如果轉橫屏 / 直屏，
+  keyboard 冇開先重新記錄高度
+*/
+window.addEventListener(
+  "orientationchange",
+  () => {
+
+    setTimeout(() => {
+
+      const activeElement =
+        document.activeElement;
+
+
+      const keyboardOpen =
+        activeElement &&
+        (
+          activeElement.tagName === "INPUT" ||
+          activeElement.tagName === "TEXTAREA"
+        );
+
+
+      if (!keyboardOpen) {
+
+        appBaseHeight =
+          window.innerHeight;
+
+        setAppHeight();
+
+        forceViewportTop();
+
+      }
+
+    }, 400);
+
+  }
+);
 const SETTINGS = {
   totalQuestions: 10,
   startingMood: 40,

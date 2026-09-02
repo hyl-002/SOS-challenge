@@ -1947,6 +1947,33 @@ body {
   }
 
 }
+/* =================================================
+   FIX PROGRESS BOX OVERFLOW
+================================================= */
+
+#screenGame .progress-bar-area {
+  width: calc(100% - 20px) !important;
+  margin: 0 10px !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 560px) {
+
+  #screenGame .progress-bar-area {
+    width: calc(100% - 20px) !important;
+    max-width: calc(100% - 20px) !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+
+}
 
 
+.progress-title {
+  gap: 10px;
+}
 
+.progress-title > span {
+  flex-shrink: 0;
+  margin-left: 8px;
+}

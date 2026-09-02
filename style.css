@@ -1977,3 +1977,112 @@ body {
   flex-shrink: 0;
   margin-left: 8px;
 }
+/* Landing 中文活動名 */
+
+.landing-topbar h1 {
+  margin: 0;
+  font-size: 28px;
+  line-height: 1.1;
+  font-weight: 900;
+  letter-spacing: .02em;
+}
+
+@media (max-width: 560px) {
+  .landing-topbar h1 {
+    font-size: 26px;
+  }
+}
+/* =================================================
+   LANDING CUSTOMER SPEECH BUBBLE
+================================================= */
+
+.landing-speech {
+  position: absolute !important;
+
+  left: 36% !important;
+  right: 4% !important;
+  bottom: 20px !important;
+
+  width: auto !important;
+
+  padding: 13px 15px !important;
+
+  background: rgba(255, 249, 236, .96) !important;
+
+  border-radius: 17px !important;
+
+  color: var(--ink) !important;
+
+  box-shadow:
+    0 7px 18px rgba(0, 35, 65, .16);
+
+  z-index: 5;
+}
+
+
+/* Bubble 小箭嘴 */
+
+.landing-speech::after {
+  content: "";
+
+  position: absolute;
+
+  left: -14px;
+  bottom: 25px;
+
+  width: 0;
+  height: 0;
+
+  border-top: 9px solid transparent;
+  border-bottom: 9px solid transparent;
+  border-right: 15px solid rgba(255, 249, 236, .96);
+}
+
+
+.landing-speech strong {
+  display: block;
+
+  color: var(--navy) !important;
+
+  font-size: 17px !important;
+  font-weight: 900;
+}
+
+
+.landing-speech p {
+  margin: 5px 0 0 !important;
+
+  color: #334454 !important;
+
+  font-size: 12px !important;
+  line-height: 1.45;
+}
+
+
+.landing-speech b {
+  color: var(--red) !important;
+
+  font-size: 15px !important;
+  font-weight: 900;
+}
+
+
+@media (max-width: 560px) {
+
+  .landing-speech {
+    left: 35% !important;
+    right: 4% !important;
+    bottom: 18px !important;
+
+    padding: 11px 13px !important;
+  }
+
+  .landing-speech strong {
+    font-size: 15px !important;
+  }
+
+  .landing-speech p {
+    font-size: 11px !important;
+  }
+
+}

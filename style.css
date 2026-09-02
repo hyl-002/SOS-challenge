@@ -449,24 +449,6 @@ body {
 }
 
 
-/* Rules */
-.rules-page {
-  height: calc(100% - 70px);
-  min-height: 0;
-
-  overflow: hidden;
-}
-
-
-/* Game */
-.game-screen {
-  height: 100%;
-  min-height: 0;
-
-  overflow: hidden;
-}
-
-
 /* Result */
 .result-screen {
   height: 100%;

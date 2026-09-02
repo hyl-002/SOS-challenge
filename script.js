@@ -5,11 +5,15 @@ Keep your current Google Apps Script / Google Sheet setup.
 Replace the URL below with your deployed /exec URL.
 */
 
-const GAS_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__fDMdnIay7xwBgcQI0dKz7Ld3o-vE-WGvJuub_bE3iyH-UHQOWew1kg/exec";
+const GAS_WEB_APP_URL =
+  "https://script.google.com/macros/s/AKfycbxouurLrJeDCf__fDMdnIay7xwBgcQI0dKz7Ld3o-vE-WGvJuub_bE3iyH-UHQOWew1kg/exec";
+
 
 if ("scrollRestoration" in history) {
   history.scrollRestoration = "manual";
 }
+
+
 /* =================================================
    IPHONE KEYBOARD / VIEWPORT FIX
 ================================================= */
@@ -69,6 +73,7 @@ function waitForKeyboardClose() {
 
 
     let stableCount = 0;
+
     let lastHeight =
       window.visualViewport.height;
 
@@ -197,12 +202,19 @@ window.addEventListener(
 
   }
 );
+
+
+/* =================================================
+   GAME SETTINGS
+================================================= */
+
 const SETTINGS = {
   totalQuestions: 10,
   startingMood: 40,
   fullSpeedBonusSeconds: 150,
   fullSpeedBonusPoints: 10
 };
+
 
 let state = {
   staffId: "",
@@ -218,7 +230,10 @@ let state = {
   locked: false
 };
 
-const $ = id => document.getElementById(id);
+
+const $ = id =>
+  document.getElementById(id);
+
 
 const screens = {
   landing: $("screenLanding"),
@@ -227,6 +242,11 @@ const screens = {
   game: $("screenGame"),
   result: $("screenResult")
 };
+
+
+/* =================================================
+   SCREEN CONTROL
+================================================= */
 
 function showScreen(name) {
 
@@ -247,11 +267,29 @@ function showScreen(name) {
 
 }
 
+
+/* =================================================
+   HELPERS
+================================================= */
+
 function formatTime(seconds) {
-  const m = String(Math.floor(seconds / 60)).padStart(2, "0");
-  const s = String(seconds % 60).padStart(2, "0");
+
+  const m =
+    String(
+      Math.floor(seconds / 60)
+    ).padStart(2, "0");
+
+
+  const s =
+    String(
+      seconds % 60
+    ).padStart(2, "0");
+
+
   return `${m}:${s}`;
+
 }
+
 
 function customerImage(mood) {
 
@@ -272,44 +310,124 @@ function customerImage(mood) {
   }
 
   return "images/customer-angry.png";
+
 }
+
 
 function normalizeMood(value) {
-  return Math.max(0, Math.min(100, value));
+
+  return Math.max(
+    0,
+    Math.min(100, value)
+  );
+
 }
+
+
+/* =================================================
+   MOOD UI
+================================================= */
 
 function updateMoodUI() {
-  state.mood = normalizeMood(state.mood);
 
-  $("moodText").textContent = `${state.mood}%`;
-$("customerFace").src =
-  customerImage(state.mood);
+  state.mood =
+    normalizeMood(state.mood);
 
-$("moodEmoji").src =
-  customerImage(state.mood);
 
-  const gauge = document.querySelector(".mood-gauge");
+  $("moodText").textContent =
+    `${state.mood}%`;
+
+
+  $("customerFace").src =
+    customerImage(state.mood);
+
+
+  $("moodEmoji").src =
+    customerImage(state.mood);
+
+
+  const gauge =
+    document.querySelector(
+      ".mood-gauge"
+    );
+
+
   if (gauge) {
+
     gauge.style.background =
-      `conic-gradient(#ffcc22 0 ${state.mood}%, #e8e8e8 ${state.mood}% 100%)`;
+      `conic-gradient(
+        #ffcc22 0 ${state.mood}%,
+        #e8e8e8 ${state.mood}% 100%
+      )`;
+
   }
+
 }
+
+
+/* =================================================
+   QUESTION PROGRESS
+================================================= */
 
 function buildStepDots() {
-  const area = $("stepDots");
+
+  const area =
+    $("stepDots");
+
+
   area.innerHTML = "";
 
-  for (let i = 0; i < SETTINGS.totalQuestions; i++) {
-    const dot = document.createElement("div");
-    dot.className = "step-dot";
-    dot.textContent = i + 1;
 
-    if (i < state.currentIndex) dot.classList.add("done");
-    if (i === state.currentIndex) dot.classList.add("active");
+  for (
+    let i = 0;
+    i < SETTINGS.totalQuestions;
+    i++
+  ) {
+
+    const dot =
+      document.createElement("div");
+
+
+    dot.className =
+      "step-dot";
+
+
+    dot.textContent =
+      i + 1;
+
+
+    if (
+      i < state.currentIndex
+    ) {
+
+      dot.classList.add(
+        "done"
+      );
+
+    }
+
+
+    if (
+      i === state.currentIndex
+    ) {
+
+      dot.classList.add(
+        "active"
+      );
+
+    }
+
 
     area.appendChild(dot);
+
   }
+
 }
+
+
+/* =================================================
+   STAFF ID VALIDATION
+================================================= */
 
 async function validateStaffId() {
 
@@ -331,7 +449,8 @@ async function validateStaffId() {
     "正在驗證 Staff ID…";
 
 
-  $("goRulesBtn").disabled = true;
+  $("goRulesBtn").disabled =
+    true;
 
 
   try {
@@ -396,8 +515,10 @@ async function validateStaffId() {
 
     console.error(error);
 
+
     $("landingMessage").textContent =
       "暫時無法驗證 Staff ID，請稍後再試。";
+
 
     return false;
 
@@ -411,389 +532,1044 @@ async function validateStaffId() {
 
 }
 
+
+/* =================================================
+   FETCH QUESTIONS
+================================================= */
+
 async function fetchQuestions() {
-  if (!GAS_WEB_APP_URL || GAS_WEB_APP_URL.includes("PASTE_YOUR")) {
-    throw new Error("未設定 Google Apps Script Web App URL。");
+
+  if (
+    !GAS_WEB_APP_URL ||
+    GAS_WEB_APP_URL.includes(
+      "PASTE_YOUR"
+    )
+  ) {
+
+    throw new Error(
+      "未設定 Google Apps Script Web App URL。"
+    );
+
   }
 
-  const response = await fetch(
-    `${GAS_WEB_APP_URL}?action=questions&t=${Date.now()}`
-  );
+
+  const response =
+    await fetch(
+      `${GAS_WEB_APP_URL}?action=questions&t=${Date.now()}`
+    );
+
 
   if (!response.ok) {
-    throw new Error("Load failed");
+
+    throw new Error(
+      "Load failed"
+    );
+
   }
 
-  const data = await response.json();
+
+  const data =
+    await response.json();
+
 
   if (!data.ok) {
-    throw new Error(data.message || "讀取題目失敗。");
+
+    throw new Error(
+      data.message ||
+      "讀取題目失敗。"
+    );
+
   }
 
-  if (!Array.isArray(data.questions) ||
-      data.questions.length < SETTINGS.totalQuestions) {
-    throw new Error(`Questions sheet 至少需要 ${SETTINGS.totalQuestions} 條啟用題目。`);
+
+  if (
+    !Array.isArray(
+      data.questions
+    ) ||
+    data.questions.length <
+    SETTINGS.totalQuestions
+  ) {
+
+    throw new Error(
+      `Questions sheet 至少需要 ${SETTINGS.totalQuestions} 條啟用題目。`
+    );
+
   }
 
-  state.questions = data.questions.slice(0, SETTINGS.totalQuestions);
+
+  state.questions =
+    data.questions.slice(
+      0,
+      SETTINGS.totalQuestions
+    );
+
 }
+
+
+/* =================================================
+   TIMER
+================================================= */
 
 function startTimer() {
-  state.startTime = Date.now();
-  state.elapsedSeconds = 0;
-  $("timerText").textContent = "00:00";
 
-  state.timerId = setInterval(() => {
-    state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
-    $("timerText").textContent = formatTime(state.elapsedSeconds);
-  }, 250);
+  state.startTime =
+    Date.now();
+
+
+  state.elapsedSeconds =
+    0;
+
+
+  $("timerText").textContent =
+    "00:00";
+
+
+  state.timerId =
+    setInterval(() => {
+
+      state.elapsedSeconds =
+        Math.floor(
+          (
+            Date.now() -
+            state.startTime
+          ) / 1000
+        );
+
+
+      $("timerText").textContent =
+        formatTime(
+          state.elapsedSeconds
+        );
+
+    }, 250);
+
 }
+
 
 function stopTimer() {
+
   if (state.timerId) {
-    clearInterval(state.timerId);
-    state.timerId = null;
+
+    clearInterval(
+      state.timerId
+    );
+
+
+    state.timerId =
+      null;
+
   }
+
 
   if (state.startTime) {
-    state.elapsedSeconds = Math.floor((Date.now() - state.startTime) / 1000);
+
+    state.elapsedSeconds =
+      Math.floor(
+        (
+          Date.now() -
+          state.startTime
+        ) / 1000
+      );
+
   }
+
 }
+
+
+/* =================================================
+   RESET GAME
+================================================= */
 
 function resetGameState() {
+
   stopTimer();
 
+
   state.currentIndex = 0;
-  state.mood = SETTINGS.startingMood;
-  state.startTime = null;
-  state.elapsedSeconds = 0;
-  state.productBest = 0;
-  state.serviceBest = 0;
-  state.answers = [];
-  state.locked = false;
+
+  state.mood =
+    SETTINGS.startingMood;
+
+  state.startTime =
+    null;
+
+  state.elapsedSeconds =
+    0;
+
+  state.productBest =
+    0;
+
+  state.serviceBest =
+    0;
+
+  state.answers =
+    [];
+
+  state.locked =
+    false;
+
+
+  /*
+    如果 feedback popup 開住，
+    reset 時收返埋
+  */
+  if ($("feedbackModal")) {
+
+    $("feedbackModal")
+      .classList
+      .add("hidden");
+
+
+    $("feedbackModal")
+      .setAttribute(
+        "aria-hidden",
+        "true"
+      );
+
+  }
+
 
   updateMoodUI();
+
 }
 
+
+/* =================================================
+   RENDER QUESTION
+================================================= */
+
 function renderQuestion() {
-  state.locked = false;
 
-  const q = state.questions[state.currentIndex];
-  const number = state.currentIndex + 1;
+  state.locked =
+    false;
 
-  $("questionCounter").textContent = `${number} / ${SETTINGS.totalQuestions}`;
-  $("questionType").textContent = q.type;
-  $("questionText").textContent = q.question;
+
+  const q =
+    state.questions[
+      state.currentIndex
+    ];
+
+
+  const number =
+    state.currentIndex + 1;
+
+
+  $("questionCounter").textContent =
+    `${number} / ${SETTINGS.totalQuestions}`;
+
+
+  $("questionType").textContent =
+    q.type;
+
+
+  $("questionText").textContent =
+    q.question;
+
 
   buildStepDots();
 
-  $("feedbackBox").classList.add("hidden");
-  $("feedbackBox").innerHTML = "";
-  $("nextBtn").classList.add("hidden");
 
-  const answerList = $("answerList");
-  answerList.innerHTML = "";
+  /*
+    每條新題目開始時，
+    popup 必須收埋
+  */
+  $("feedbackModal")
+    .classList
+    .add("hidden");
 
-  q.answers.forEach((answer, index) => {
-    const button = document.createElement("button");
-    button.type = "button";
-    button.className = "answer-btn";
 
-    const letter = String.fromCharCode(65 + index);
+  $("feedbackModal")
+    .setAttribute(
+      "aria-hidden",
+      "true"
+    );
 
-    button.innerHTML = `
-      <span class="answer-letter">${letter}</span>
-      <span>${escapeHtml(answer.text)}</span>
-    `;
 
-    button.addEventListener("click", () => {
-      selectAnswer(q, answer, index, button);
-    });
+  const answerList =
+    $("answerList");
 
-    answerList.appendChild(button);
-  });
+
+  answerList.innerHTML =
+    "";
+
+
+  q.answers.forEach(
+    (answer, index) => {
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      button.type =
+        "button";
+
+
+      button.className =
+        "answer-btn";
+
+
+      const letter =
+        String.fromCharCode(
+          65 + index
+        );
+
+
+      button.innerHTML = `
+        <span class="answer-letter">
+          ${letter}
+        </span>
+
+        <span>
+          ${escapeHtml(answer.text)}
+        </span>
+      `;
+
+
+      button.addEventListener(
+        "click",
+        () => {
+
+          selectAnswer(
+            q,
+            answer,
+            index,
+            button
+          );
+
+        }
+      );
+
+
+      answerList.appendChild(
+        button
+      );
+
+    }
+  );
+
 }
 
-function selectAnswer(question, answer, answerIndex, button) {
-  if (state.locked) return;
-  state.locked = true;
 
-  document.querySelectorAll(".answer-btn").forEach(btn => {
-    btn.disabled = true;
-  });
+/* =================================================
+   SELECT ANSWER
+================================================= */
 
-  button.classList.add("selected");
+function selectAnswer(
+  question,
+  answer,
+  answerIndex,
+  button
+) {
 
-  const moodBefore = state.mood;
-
-  state.mood += Number(answer.score || 0);
-  updateMoodUI();
-
-  if (answer.isBest) {
-    if (String(question.type).toLowerCase() === "product") {
-      state.productBest++;
-    }
-
-    if (String(question.type).toLowerCase() === "service") {
-      state.serviceBest++;
-    }
+  if (state.locked) {
+    return;
   }
 
+
+  state.locked =
+    true;
+
+
+  /*
+    揀咗答案之後，
+    所有答案 disable
+  */
+  document
+    .querySelectorAll(
+      ".answer-btn"
+    )
+    .forEach(btn => {
+
+      btn.disabled =
+        true;
+
+    });
+
+
+  button.classList.add(
+    "selected"
+  );
+
+
+  const moodBefore =
+    state.mood;
+
+
+  /*
+    更新 mood
+  */
+  state.mood +=
+    Number(
+      answer.score || 0
+    );
+
+
+  updateMoodUI();
+
+
+  /*
+    記錄 best answer
+  */
+  if (answer.isBest) {
+
+    if (
+      String(
+        question.type
+      ).toLowerCase() ===
+      "product"
+    ) {
+
+      state.productBest++;
+
+    }
+
+
+    if (
+      String(
+        question.type
+      ).toLowerCase() ===
+      "service"
+    ) {
+
+      state.serviceBest++;
+
+    }
+
+  }
+
+
+  /*
+    保存答案紀錄
+  */
   state.answers.push({
-    questionId: question.id,
-    type: question.type,
-    selectedOption: String.fromCharCode(65 + answerIndex),
-    selectedText: answer.text,
-    score: Number(answer.score || 0),
-    isBest: Boolean(answer.isBest),
-    moodBefore: moodBefore,
-    moodAfter: state.mood
+
+    questionId:
+      question.id,
+
+    type:
+      question.type,
+
+    selectedOption:
+      String.fromCharCode(
+        65 + answerIndex
+      ),
+
+    selectedText:
+      answer.text,
+
+    score:
+      Number(
+        answer.score || 0
+      ),
+
+    isBest:
+      Boolean(
+        answer.isBest
+      ),
+
+    reaction:
+      answer.reaction || "",
+
+    moodBefore:
+      moodBefore,
+
+    moodAfter:
+      state.mood
+
   });
 
-  let moodMessage = "Customer Mood —";
 
-  if (Number(answer.score) > 0) moodMessage = "Customer Mood ↑";
-  if (Number(answer.score) < 0) moodMessage = "Customer Mood ↓";
+  /*
+    判斷 Mood ↑ ↓ —
+  */
+  let moodMessage =
+    "Customer Mood —";
 
-  $("feedbackBox").innerHTML = `
-    <strong>${moodMessage}</strong>
-    <span>${escapeHtml(answer.reaction || "")}</span>
-  `;
 
-  $("feedbackBox").classList.remove("hidden");
-  $("nextBtn").classList.remove("hidden");
+  if (
+    Number(answer.score) > 0
+  ) {
+
+    moodMessage =
+      "Customer Mood ↑";
+
+  }
+
+
+  if (
+    Number(answer.score) < 0
+  ) {
+
+    moodMessage =
+      "Customer Mood ↓";
+
+  }
+
+
+  /*
+    POPUP 內容
+    Reaction 來自 Google Sheet
+  */
+  $("feedbackMoodTitle")
+    .textContent =
+      moodMessage;
+
+
+  $("feedbackReaction")
+    .textContent =
+      answer.reaction || "";
+
+
+  /*
+    Popup 客人圖片
+    會跟答完之後嘅 mood
+  */
+  $("feedbackMoodImage").src =
+    customerImage(
+      state.mood
+    );
+
+
+  /*
+    彈出 popup
+  */
+  $("feedbackModal")
+    .classList
+    .remove("hidden");
+
+
+  $("feedbackModal")
+    .setAttribute(
+      "aria-hidden",
+      "false"
+    );
+
 }
+
+
+/* =================================================
+   RESULT CALCULATION
+================================================= */
 
 function calculateResult() {
+
   const speedBonus =
-    state.elapsedSeconds <= SETTINGS.fullSpeedBonusSeconds
-      ? SETTINGS.fullSpeedBonusPoints
+    state.elapsedSeconds <=
+    SETTINGS.fullSpeedBonusSeconds
+
+      ? SETTINGS
+          .fullSpeedBonusPoints
+
       : 0;
 
-  const finalMood = normalizeMood(state.mood + speedBonus);
+
+  const finalMood =
+    normalizeMood(
+      state.mood +
+      speedBonus
+    );
+
 
   return {
+
     finalMood,
+
     speedBonus,
-    qualified: finalMood === 100
+
+    qualified:
+      finalMood === 100
+
   };
+
 }
+
+
+/* =================================================
+   FINISH GAME
+================================================= */
 
 async function finishGame() {
+
   stopTimer();
 
-  const result = calculateResult();
 
-  $("finalMood").textContent = `${result.finalMood}%`;
-  $("completionTime").textContent = formatTime(state.elapsedSeconds);
-  $("speedBonus").textContent = `+${result.speedBonus}`;
-  $("productScore").textContent = `${state.productBest} / 7`;
-  $("serviceScore").textContent = `${state.serviceBest} / 3`;
-$("resultFace").src =
-  customerImage(result.finalMood);
+  const result =
+    calculateResult();
 
-$("resultCustomer").src =
-  customerImage(result.finalMood);
 
-if (result.finalMood === 100) {
+  $("finalMood").textContent =
+    `${result.finalMood}%`;
 
-  $("resultTitle").textContent = "客戶非常滿意！";
 
-  $("resultMessage").textContent = "你為顧客提供了專業又貼心嘅服務。";
+  $("completionTime").textContent =
+    formatTime(
+      state.elapsedSeconds
+    );
 
-  $("rewardBox").innerHTML =
 
-    '<span class="trophy">🏆</span><div><strong>Happy Customer Award</strong><small>恭喜你！已符合獎賞資格 🎉</small></div>';
+  $("speedBonus").textContent =
+    `+${result.speedBonus}`;
 
-} else if (result.finalMood >= 80) {
 
-  $("resultTitle").textContent = "客戶很滿意！";
+  $("productScore").textContent =
+    `${state.productBest} / 7`;
 
-  $("resultMessage").textContent = "表現不錯！你已為顧客提供良好的服務體驗。";
 
-  $("rewardBox").innerHTML =
+  $("serviceScore").textContent =
+    `${state.serviceBest} / 3`;
 
-    '<span class="trophy">✨</span><div><strong>Great Job!</strong><small>你距離 100% Happy Customer 只差一點！</small></div>';
 
-} else if (result.finalMood >= 60) {
+  $("resultFace").src =
+    customerImage(
+      result.finalMood
+    );
 
-  $("resultTitle").textContent = "客戶滿意";
 
-  $("resultMessage").textContent = "顧客的基本需要已得到處理，但仍有提升空間。";
+  $("resultCustomer").src =
+    customerImage(
+      result.finalMood
+    );
 
-  $("rewardBox").innerHTML =
 
-    '<span class="trophy">💡</span><div><strong>Keep Learning!</strong><small>留意顧客需要及回應方式，可進一步提升服務體驗。</small></div>';
+  /*
+    RESULT COPY
+  */
 
-} else {
+  if (
+    result.finalMood === 100
+  ) {
 
-  $("resultTitle").textContent = "客戶有點失望";
+    $("resultTitle").textContent =
+      "客戶非常滿意！";
 
-  $("resultMessage").textContent = "今次顧客體驗未如理想，部分回應仍有改善空間。";
 
-  $("rewardBox").innerHTML =
+    $("resultMessage").textContent =
+      "你為顧客提供了專業又貼心嘅服務。";
 
-    '<span class="trophy">📘</span><div><strong>Learning Opportunity</strong><small>可重溫相關產品知識及服務技巧，掌握更合適的處理方式。</small></div>';
 
-}
+    $("rewardBox").innerHTML =
+      '<span class="trophy">🏆</span><div><strong>Happy Customer Award</strong><small>恭喜你！已符合獎賞資格 🎉</small></div>';
+
+
+  } else if (
+    result.finalMood >= 80
+  ) {
+
+    $("resultTitle").textContent =
+      "客戶很滿意！";
+
+
+    $("resultMessage").textContent =
+      "你今次整體表現良好，成功為顧客提供正面嘅服務體驗。";
+
+
+    $("rewardBox").innerHTML =
+      '<span class="trophy">⭐</span><div><strong>Good Customer Experience</strong><small>你已展現良好產品知識及服務技巧。</small></div>';
+
+
+  } else if (
+    result.finalMood >= 60
+  ) {
+
+    $("resultTitle").textContent =
+      "客戶滿意";
+
+
+    $("resultMessage").textContent =
+      "你已處理顧客基本需要，部分回應仍有改善空間。";
+
+
+    $("rewardBox").innerHTML =
+      '<span class="trophy">💡</span><div><strong>Customer Experience Review</strong><small>可重溫相關產品知識及服務技巧。</small></div>';
+
+
+  } else {
+
+    $("resultTitle").textContent =
+      "客戶有點失望";
+
+
+    $("resultMessage").textContent =
+      "今次顧客體驗未如理想，部分回應仍有改善空間。";
+
+
+    $("rewardBox").innerHTML =
+      '<span class="trophy">📘</span><div><strong>Learning Opportunity</strong><small>可重溫相關產品知識及服務技巧，掌握更合適的處理方式。</small></div>';
+
+  }
+
 
   forceViewportTop();
 
-showScreen("result");
 
-await submitResult(result);
+  showScreen(
+    "result"
+  );
+
+
+  await submitResult(
+    result
+  );
+
 }
 
-async function submitResult(result) {
-  $("submitStatus").textContent = "正在儲存成績…";
+
+/* =================================================
+   SUBMIT RESULT
+================================================= */
+
+async function submitResult(
+  result
+) {
+
+  $("submitStatus").textContent =
+    "正在儲存成績…";
+
 
   const payload = {
-    action: "submitResult",
-    staffId: state.staffId,
-    finalMood: result.finalMood,
-    productScore: state.productBest,
-    serviceScore: state.serviceBest,
-    completionSeconds: state.elapsedSeconds,
-    completionTime: formatTime(state.elapsedSeconds),
-    speedBonus: result.speedBonus,
-    qualified: result.qualified ? "Yes" : "No",
-    answers: state.answers
+
+    action:
+      "submitResult",
+
+    staffId:
+      state.staffId,
+
+    finalMood:
+      result.finalMood,
+
+    productScore:
+      state.productBest,
+
+    serviceScore:
+      state.serviceBest,
+
+    completionSeconds:
+      state.elapsedSeconds,
+
+    completionTime:
+      formatTime(
+        state.elapsedSeconds
+      ),
+
+    speedBonus:
+      result.speedBonus,
+
+    qualified:
+      result.qualified
+        ? "Yes"
+        : "No",
+
+    answers:
+      state.answers
+
   };
 
-  try {
-    const response = await fetch(GAS_WEB_APP_URL, {
-      method: "POST",
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8"
-      },
-      body: JSON.stringify(payload)
-    });
 
-    const data = await response.json();
+  try {
+
+    const response =
+      await fetch(
+        GAS_WEB_APP_URL,
+        {
+
+          method:
+            "POST",
+
+          headers: {
+            "Content-Type":
+              "text/plain;charset=utf-8"
+          },
+
+          body:
+            JSON.stringify(
+              payload
+            )
+
+        }
+      );
+
+
+    const data =
+      await response.json();
+
 
     if (!data.ok) {
-      throw new Error(data.message || "Save failed");
+
+      throw new Error(
+        data.message ||
+        "Save failed"
+      );
+
     }
 
-    $("submitStatus").textContent = "成績已儲存 ✓";
+
+    $("submitStatus").textContent =
+      "成績已儲存 ✓";
+
+
   } catch (error) {
-    console.error(error);
-    $("submitStatus").textContent = "成績未能儲存，請通知活動負責人。";
+
+    console.error(
+      error
+    );
+
+
+    $("submitStatus").textContent =
+      "成績未能儲存，請通知活動負責人。";
+
   }
+
 }
+
+
+/* =================================================
+   ESCAPE HTML
+================================================= */
 
 function escapeHtml(value) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;")
-    .replaceAll("'", "&#039;");
+
+  return String(
+    value ?? ""
+  )
+    .replaceAll(
+      "&",
+      "&amp;"
+    )
+    .replaceAll(
+      "<",
+      "&lt;"
+    )
+    .replaceAll(
+      ">",
+      "&gt;"
+    )
+    .replaceAll(
+      '"',
+      "&quot;"
+    )
+    .replaceAll(
+      "'",
+      "&#039;"
+    );
+
 }
 
-$("goRulesBtn").addEventListener(
-  "click",
-  async () => {
 
-    const valid =
-      await validateStaffId();
+/* =================================================
+   LANDING → RULES
+================================================= */
+
+$("goRulesBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      const valid =
+        await validateStaffId();
 
 
-    if (!valid) {
-      return;
+      if (!valid) {
+        return;
+      }
+
+
+      /*
+        1. 收 keyboard
+      */
+      $("staffId").blur();
+
+
+      /*
+        2. 等 viewport 回復
+      */
+      await waitForKeyboardClose();
+
+
+      /*
+        3. 固定高度
+      */
+      setAppHeight();
+
+
+      /*
+        4. 回最頂
+      */
+      forceViewportTop();
+
+
+      /*
+        5. 去 Rules
+      */
+      showScreen(
+        "rules"
+      );
+
     }
+  );
 
 
-    /*
-      1. 先令 Staff ID input 失去 focus
-      → iPhone keyboard 開始收起
-    */
-    $("staffId").blur();
+/* =================================================
+   BACK BUTTON
+================================================= */
+
+$("backBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      showScreen(
+        "landing"
+      );
+
+    }
+  );
 
 
-    /*
-      2. 等 keyboard 真正收起，
-      Safari viewport 回復正常
-    */
-    await waitForKeyboardClose();
+/* =================================================
+   START GAME
+================================================= */
+
+$("startBtn")
+  .addEventListener(
+    "click",
+    async () => {
+
+      forceViewportTop();
 
 
-    /*
-      3. 再固定遊戲高度
-    */
-    setAppHeight();
+      showScreen(
+        "loading"
+      );
 
 
-    /*
-      4. 強制返最頂
-    */
-    forceViewportTop();
+      try {
+
+        await fetchQuestions();
 
 
-    /*
-      5. 最後先入 Rules page
-    */
-    showScreen("rules");
-
-  }
-);
-$("backBtn").addEventListener("click", () => {
-  showScreen("landing");
-});
-
-$("startBtn").addEventListener(
-  "click",
-  async () => {
-
-    forceViewportTop();
-
-    showScreen("loading");
+        resetGameState();
 
 
-    try {
+        forceViewportTop();
 
-      await fetchQuestions();
+
+        showScreen(
+          "game"
+        );
+
+
+        renderQuestion();
+
+
+        startTimer();
+
+
+      } catch (error) {
+
+        console.error(
+          error
+        );
+
+
+        forceViewportTop();
+
+
+        showScreen(
+          "rules"
+        );
+
+
+        alert(
+          error.message
+        );
+
+      }
+
+    }
+  );
+
+
+/* =================================================
+   FEEDBACK POPUP → NEXT QUESTION
+================================================= */
+
+$("modalNextBtn")
+  .addEventListener(
+    "click",
+    () => {
+
+      /*
+        先收 popup
+      */
+      $("feedbackModal")
+        .classList
+        .add("hidden");
+
+
+      $("feedbackModal")
+        .setAttribute(
+          "aria-hidden",
+          "true"
+        );
+
+
+      /*
+        下一題
+      */
+      if (
+        state.currentIndex <
+        SETTINGS.totalQuestions - 1
+      ) {
+
+        state.currentIndex++;
+
+
+        renderQuestion();
+
+
+      } else {
+
+        /*
+          最後一題
+        */
+        finishGame();
+
+      }
+
+    }
+  );
+
+
+/* =================================================
+   RETURN HOME
+================================================= */
+
+$("restartBtn")
+  .addEventListener(
+    "click",
+    () => {
 
       resetGameState();
 
-      forceViewportTop();
 
-      showScreen("game");
-
-      renderQuestion();
-
-      startTimer();
+      $("staffId").value =
+        "";
 
 
-    } catch (error) {
-
-      console.error(error);
-
-      forceViewportTop();
-
-      showScreen("rules");
-
-      alert(error.message);
+      showScreen(
+        "landing"
+      );
 
     }
+  );
 
-  }
+
+/* =================================================
+   INITIAL SCREEN
+================================================= */
+
+showScreen(
+  "landing"
 );
-
-$("nextBtn").addEventListener("click", () => {
-  if (state.currentIndex < SETTINGS.totalQuestions - 1) {
-    state.currentIndex++;
-    renderQuestion();
-  } else {
-    finishGame();
-  }
-});
-
-
-$("restartBtn").addEventListener("click", () => {
-  resetGameState();
-  $("staffId").value = "";
-  showScreen("landing");
-});
-
-showScreen("landing");

@@ -1025,3 +1025,240 @@ img.result-mini-face {
   #screenLanding .quick-info-item { padding:6px 4px; }
   #screenLanding .landing-start-btn { margin-top:9px; }
 }
+/* =================================================
+   FINAL MOBILE VIEWPORT LOCK
+   Fix iPhone Safari shifting / top clipping
+================================================= */
+
+html,
+body {
+  margin: 0;
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+  overscroll-behavior: none;
+}
+
+body {
+  position: fixed;
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  background: #dfe5eb;
+}
+
+
+/* Entire game = one fixed app viewport */
+.game-shell {
+  position: fixed;
+
+  left: 50%;
+  top: 0;
+
+  transform: translateX(-50%);
+
+  width: min(760px, 100%);
+  height: 100dvh;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  background: #fff;
+}
+
+
+/* Every page occupies exactly the same viewport */
+.screen {
+  position: absolute;
+
+  inset: 0;
+
+  width: 100%;
+  height: 100%;
+
+  min-height: 0;
+
+  overflow: hidden;
+
+  display: none;
+}
+
+.screen.active {
+  display: block;
+}
+
+
+/* =================================================
+   SAFE AREA FOR iPHONE
+================================================= */
+
+/* Top game header */
+.game-head {
+  height: calc(58px + env(safe-area-inset-top));
+
+  padding:
+    env(safe-area-inset-top)
+    14px
+    0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  flex-shrink: 0;
+}
+
+
+/* Timer must stay inside header */
+.time-chip {
+  position: relative;
+
+  top: 0;
+  right: 0;
+
+  flex-shrink: 0;
+
+  white-space: nowrap;
+
+  z-index: 20;
+}
+
+
+/* Rules header */
+.navy-header {
+  height: calc(60px + env(safe-area-inset-top));
+
+  padding:
+    env(safe-area-inset-top)
+    16px
+    0;
+}
+
+
+/* Result title */
+.result-title {
+  height: calc(60px + env(safe-area-inset-top));
+
+  padding-top: env(safe-area-inset-top);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+
+/* Landing top */
+.landing-topbar {
+  height: calc(70px + env(safe-area-inset-top));
+
+  padding:
+    env(safe-area-inset-top)
+    18px
+    0;
+}
+
+
+/* =================================================
+   FIX INTERNAL PAGE HEIGHTS
+================================================= */
+
+.game-screen {
+  height: 100%;
+  overflow: hidden;
+}
+
+
+/* Account for taller safe-area header */
+.rules-page {
+  height:
+    calc(
+      100% -
+      60px -
+      env(safe-area-inset-top)
+    );
+
+  min-height: 0;
+  overflow: hidden;
+}
+
+
+.result-screen {
+  height: 100%;
+  overflow: hidden;
+}
+
+
+.landing-game {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+
+.loading-page {
+  height: 100%;
+  min-height: 0;
+}
+
+
+/* =================================================
+   MOBILE
+================================================= */
+
+@media (max-width: 560px) {
+
+  .game-head {
+    height:
+      calc(
+        54px +
+        env(safe-area-inset-top)
+      );
+
+    padding-left: 14px;
+    padding-right: 14px;
+  }
+
+
+  .game-head > span {
+    font-size: 15px;
+  }
+
+
+  .time-chip {
+    padding: 7px 10px;
+
+    font-size: 14px;
+
+    border-radius: 11px;
+  }
+
+
+  /*
+    IMPORTANT:
+    Don't let the rest of the game push header around.
+  */
+  .progress-bar-area {
+    position: relative;
+
+    flex-shrink: 0;
+  }
+
+
+  .race-scene {
+    position: relative;
+
+    flex-shrink: 0;
+  }
+
+
+  .answer-panel {
+    position: relative;
+
+    flex-shrink: 0;
+  }
+
+}

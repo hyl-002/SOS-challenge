@@ -10,247 +10,61 @@
 <main class="game-shell">
 
 <section id="screenLanding" class="screen active">
-
   <div class="landing-game">
-
-    <!-- TITLE -->
     <div class="landing-topbar">
       <div>
         <span class="landing-kicker">ICC 開季互動挑戰</span>
         <h1>Customer Mood Challenge</h1>
       </div>
-
       <div class="landing-badge">🎮</div>
     </div>
 
-
-    <!-- GAME PREVIEW -->
     <div class="landing-stage">
+      <img class="landing-bg" src="images/racecourse-bg.png" alt="">
+      <img class="landing-customer" src="images/customer-neutral.png" alt="Customer">
 
-      <img
-        class="landing-bg"
-        src="images/racecourse-bg.png"
-        alt=""
-      >
-
-      <img
-        class="landing-customer"
-        src="images/customer-neutral.png"
-        alt="Customer"
-      >
-
-
-      <!-- STARTING MOOD -->
       <div class="landing-mood-card">
-
         <small>STARTING<br>MOOD</small>
-
-        <img
-          src="images/customer-neutral.png"
-          alt=""
-        >
-
+        <img src="images/customer-neutral.png" alt="">
         <strong>40%</strong>
-
       </div>
 
-
-      <!-- CUSTOMER SPEECH -->
       <div class="bubble landing-speech">
-
         <strong>今日由你接待我！</strong>
-
-        <p>
-          運用產品知識及服務技巧，
-          挑戰令顧客滿意度升至
-          <b>100%</b>！
-        </p>
-
+        <p>運用產品知識及服務技巧，挑戰令顧客滿意度升至 <b>100%</b>！</p>
       </div>
-
     </div>
 
-
-    <!-- LOWER PANEL -->
     <div class="landing-panel">
-
       <div class="landing-mission-title">
-
         <span class="mission-icon">🎧</span>
-
         <div>
           <h2>準備好接受挑戰？</h2>
           <p>準確回答 · 貼心服務 · 快速完成</p>
         </div>
-
       </div>
-
 
       <div class="landing-quick-info">
-
-        <div class="quick-info-item">
-          <span>💬</span>
-          <strong>10題</strong>
-          <small>顧客情境</small>
-        </div>
-
-        <div class="quick-info-item">
-          <span>⚡</span>
-          <strong>2:30</strong>
-          <small>速度獎分</small>
-        </div>
-
-        <div class="quick-info-item">
-          <span>🏆</span>
-          <strong>100%</strong>
-          <small>獎賞目標</small>
-        </div>
-
+        <div class="quick-info-item"><span>💬</span><strong>10題</strong><small>顧客情境</small></div>
+        <div class="quick-info-item"><span>⚡</span><strong>2:30</strong><small>速度獎分</small></div>
+        <div class="quick-info-item"><span>🏆</span><strong>100%</strong><small>獎賞目標</small></div>
       </div>
 
-
       <div class="staff-entry">
-
-        <label for="staffId">
-          輸入 Staff ID 開始挑戰
-        </label>
-
+        <label for="staffId">輸入 Staff ID 開始挑戰</label>
         <div class="staff-input-wrap">
-
           <span class="staff-icon">👤</span>
-
-          <input
-            id="staffId"
-            type="text"
-            inputmode="numeric"
-            autocomplete="off"
-            placeholder="Staff ID"
-          >
-
+          <input id="staffId" type="text" inputmode="numeric" autocomplete="off" placeholder="Staff ID">
         </div>
-
       </div>
 
-
-      <button
-        id="goRulesBtn"
-        class="yellow-btn landing-start-btn"
-      >
-        開始挑戰 ▶
-      </button>
-
-
-      <p
-        id="landingMessage"
-        class="status"
-      ></p>
-
+      <button id="goRulesBtn" class="yellow-btn landing-start-btn">開始挑戰 ▶</button>
+      <p id="landingMessage" class="status"></p>
     </div>
-
   </div>
-
 </section>
 
-
-    <div class="landing-panel">
-
-      <div class="landing-mission-title">
-
-        <span class="mission-icon">🎧</span>
-
-        <div>
-          <h2>準備好接受挑戰？</h2>
-          <p>
-            準確回答．貼心服務．快速完成
-          </p>
-        </div>
-
-      </div>
-
-
-      <div class="landing-quick-info">
-
-        <div class="quick-info-item">
-          <span>💬</span>
-          <strong>10題</strong>
-          <small>顧客情境</small>
-        </div>
-
-        <div class="quick-info-item">
-          <span>⚡</span>
-          <strong>2:30</strong>
-          <small>速度獎分</small>
-        </div>
-
-        <div class="quick-info-item">
-          <span>🏆</span>
-          <strong>100%</strong>
-          <small>獎賞目標</small>
-        </div>
-
-      </div>
-
-
-      <div class="staff-entry">
-
-        <label for="staffId">
-          輸入 Staff ID 開始挑戰
-        </label>
-
-        <div class="staff-input-wrap">
-
-          <span class="staff-icon">
-            👤
-          </span>
-
-          <input
-            id="staffId"
-            type="text"
-            inputmode="numeric"
-            autocomplete="off"
-            placeholder="Staff ID"
-          >
-
-        </div>
-
-      </div>
-
-
-      <button
-        id="goRulesBtn"
-        class="yellow-btn landing-start-btn"
-      >
-        開始挑戰 ▶
-      </button>
-
-
-      <p
-        id="landingMessage"
-        class="status"
-      ></p>
-
-    </div>
-
-  </div>
-
-</section>
-      <div class="landing-scene">
-        <div class="bubble landing-bubble">
-          <strong>準備好未？</strong>
-          <p>運用產品知識同服務技巧，令我成為 100% Happy Customer！</p>
-        </div>
-      </div>
-
-      <div class="login-card">
-        <label for="staffId">Staff ID</label>
-        <input id="staffId" type="text" inputmode="numeric" placeholder="輸入 Staff ID">
-        <button id="goRulesBtn" class="yellow-btn">開始挑戰</button>
-        <p id="landingMessage" class="status"></p>
-      </div>
-    </div>
-  </section>
-
-  <section id="screenRules" class="screen">
+<section id="screenRules" class="screen">
     <div class="navy-header">
       <button id="backBtn" class="back-btn">‹</button>
       <h2>挑戰規則</h2>

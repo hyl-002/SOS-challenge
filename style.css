@@ -2086,3 +2086,70 @@ body {
   }
 
 }
+/* =================================================
+   LANDING PAGE - FINAL LAYOUT RESET
+================================================= */
+
+#screenLanding .landing-game {
+  position: relative;
+  width: 100%;
+}
+
+/* Header */
+#screenLanding .landing-topbar {
+  position: relative !important;
+}
+
+/* Racecourse */
+#screenLanding .landing-stage {
+  position: relative !important;
+}
+
+/* Bottom information panel */
+#screenLanding .landing-panel {
+  position: relative !important;
+}
+
+/* Mission title */
+#screenLanding .landing-mission-title {
+  position: relative !important;
+}
+
+/* 10題 / 2:30 / 100% */
+#screenLanding .landing-quick-info {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+}
+
+/* Staff ID */
+#screenLanding .staff-entry {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+}
+
+#screenLanding .staff-input-wrap {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* Start button */
+#screenLanding .landing-start-btn {
+  position: relative !important;
+  left: auto !important;
+  right: auto !important;
+  top: auto !important;
+  bottom: auto !important;
+  width: 100% !important;
+}

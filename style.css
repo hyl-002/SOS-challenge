@@ -74,8 +74,16 @@ button{cursor:pointer}
 /* result */
 .result-screen{min-height:100vh;background:linear-gradient(#0c4874,#164d6d)}
 .result-title{height:78px;background:linear-gradient(var(--navy),var(--navy2));color:var(--yellow);font-size:31px;font-weight:900;display:grid;place-items:center}
-.result-scene{height:370px;position:relative;overflow:hidden;background:linear-gradient(#7bc9f1 0 55%,#65ad4d 56%)}
-.result-scene:after{content:"";position:absolute;left:34%;right:-12%;bottom:-78px;height:170px;border:21px solid #68757e;border-radius:50%;transform:rotate(-8deg);box-shadow:inset 0 0 0 5px #fff}
+.result-scene {
+  height: 370px;
+  position: relative;
+  overflow: hidden;
+
+  background-image: url("images/racecourse-bg.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
 .confetti{position:absolute;left:0;right:0;top:8px;text-align:center;color:#ffcc22;letter-spacing:18px;font-size:18px;z-index:5}
 .result-person{position:absolute;left:8%;bottom:0;font-size:155px;z-index:2}.result-bubble{position:absolute;left:4%;top:22px;width:60%;z-index:4}.result-bubble>span{font-size:13px}.result-bubble strong{font-size:24px;color:var(--red);margin-top:5px}.result-bubble p{margin:5px 0 0}
 .final-gauge{position:absolute;right:3%;top:38px;width:148px;height:148px;border-radius:50%;background:#fffdf8;border:11px solid var(--green);z-index:4;display:flex;flex-direction:column;align-items:center;justify-content:center}.final-gauge small{font-weight:800}.final-gauge span{font-size:34px}.final-gauge strong{font-size:35px;color:#3f8f32}
@@ -569,5 +577,12 @@ img.result-mini-face {
   .mood-inner,
   .final-gauge {
     gap: 0;
+  }
+  .race-scene {
+    background-position: 48% center;
+  }
+
+  .result-scene {
+    background-position: 52% center;
   }
 }

@@ -1262,3 +1262,156 @@ body {
   }
 
 }
+/* =================================================
+   FINAL SCREEN POSITION FIX
+   RULES + GAME
+================================================= */
+
+@media (max-width: 560px) {
+
+  /* ---------- RULES SCREEN ---------- */
+
+  #screenRules {
+    height: 100%;
+    overflow: hidden;
+
+    display: none;
+    grid-template-rows:
+      calc(54px + env(safe-area-inset-top))
+      1fr;
+  }
+
+  #screenRules.active {
+    display: grid;
+  }
+
+  #screenRules .navy-header {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    padding:
+      env(safe-area-inset-top)
+      14px
+      0;
+
+    margin: 0;
+
+    flex-shrink: 0;
+  }
+
+  #screenRules .rules-page {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+  }
+
+
+  /* ---------- GAME SCREEN ---------- */
+
+  #screenGame {
+    height: 100%;
+
+    overflow: hidden;
+
+    display: none;
+
+    grid-template-rows:
+      calc(54px + env(safe-area-inset-top))
+      auto
+      300px
+      1fr;
+  }
+
+  #screenGame.active {
+    display: grid;
+  }
+
+
+  /* Top bar */
+  #screenGame .game-head {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    padding:
+      env(safe-area-inset-top)
+      14px
+      0;
+
+    margin: 0;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    box-sizing: border-box;
+  }
+
+
+  /* Timer */
+  #screenGame .time-chip {
+    position: static;
+
+    margin: 0;
+
+    flex: 0 0 auto;
+
+    transform: none;
+  }
+
+
+  /* Question progress */
+  #screenGame .progress-bar-area {
+    position: relative;
+
+    width: 100%;
+
+    margin: 0;
+
+    flex: none;
+  }
+
+
+  /* Customer scene */
+  #screenGame .race-scene {
+    position: relative;
+
+    width: 100%;
+    height: 300px;
+
+    margin: 0;
+
+    flex: none;
+
+    overflow: hidden;
+  }
+
+
+  /* Answer section fills whatever height remains */
+  #screenGame .answer-panel {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    min-height: 0;
+
+    margin: 0;
+
+    overflow: hidden;
+
+    box-sizing: border-box;
+  }
+
+}

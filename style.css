@@ -2265,7 +2265,7 @@ body {
 ================================================= */
 
 :root {
-  --content-shift-down: 16px;
+  --content-shift-down: 12px;
 }
 
 
@@ -2308,7 +2308,7 @@ body {
 @media (max-width: 560px) {
 
   :root {
-    --content-shift-down: 16px;
+    --content-shift-down: 12px;
   }
 
 }

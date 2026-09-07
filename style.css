@@ -2312,3 +2312,20 @@ body {
   }
 
 }
+/* Rule page customer image */
+
+.rules-person {
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  height: 165px;
+  margin-bottom: 6px;
+}
+
+.rules-person-image {
+  width: 145px;
+  height: 165px;
+  object-fit: contain;
+  object-position: center bottom;
+  filter: drop-shadow(0 5px 4px rgba(0,0,0,.16));
+}

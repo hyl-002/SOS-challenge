@@ -2260,3 +2260,55 @@ body {
 #screenLanding .landing-badge {
   display: none !important;
 }
+/* =================================================
+   GLOBAL CONTENT SHIFT DOWN
+================================================= */
+
+:root {
+  --content-shift-down: 14px;
+}
+
+
+/* ---------- LANDING ---------- */
+
+#screenLanding .landing-game {
+  padding-top: var(--content-shift-down) !important;
+}
+
+
+/* ---------- RULES ---------- */
+
+#screenRules .rules-page {
+  transform: translateY(var(--content-shift-down)) !important;
+
+  height:
+    calc(
+      100% -
+      var(--content-shift-down)
+    ) !important;
+}
+
+
+/* ---------- GAME ---------- */
+
+#screenGame .game-head {
+  margin-top: var(--content-shift-down) !important;
+}
+
+
+/* Prevent old overrides from moving them again */
+
+#screenLanding .landing-game,
+#screenRules .rules-page,
+#screenGame .game-head {
+  box-sizing: border-box !important;
+}
+
+
+@media (max-width: 560px) {
+
+  :root {
+    --content-shift-down: 12px;
+  }
+
+}
